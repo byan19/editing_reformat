@@ -1,5 +1,4 @@
-python3
--m experiments.evaluate \
+python3 -m experiments.evaluate \
 --alg_name=AlphaEdit \
 --model_name=meta-llama/Meta-Llama-3-8B-Instruct \
 --hparams_fname=Llama3-8B.json \
