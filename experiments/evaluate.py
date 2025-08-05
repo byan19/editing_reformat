@@ -36,6 +36,7 @@ from util.globals import *
 from nse import NSEHyperParams
 from nse.nse_main import apply_nse_to_model
 from glue_eval.glue_eval import GLUEEval
+import pdb
 ALG_DICT = {
     "AlphaEdit": (AlphaEditHyperParams, apply_AlphaEdit_to_model),
     "MEMIT_seq": (MEMITHyperParams, apply_memit_seq_to_model),
@@ -115,6 +116,7 @@ def main(
     # Instantiate vanilla model
     if type(model_name) is str:
         print("Instantiating model")
+        pdb.set_trace()
         model = AutoModelForCausalLM.from_pretrained(model_name).cuda()
         tok = AutoTokenizer.from_pretrained(model_name)
         tok.pad_token = tok.eos_token
