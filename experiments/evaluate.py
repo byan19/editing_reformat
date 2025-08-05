@@ -116,8 +116,9 @@ def main(
     # Instantiate vanilla model
     if type(model_name) is str:
         print("Instantiating model")
+        #model = AutoModelForCausalLM.from_pretrained(model_name).cuda()
         pdb.set_trace()
-        model = AutoModelForCausalLM.from_pretrained(model_name).cuda()
+        model = AutoModelForCausalLM.from_pretrained(model_name)
         tok = AutoTokenizer.from_pretrained(model_name)
         tok.pad_token = tok.eos_token
     else:
