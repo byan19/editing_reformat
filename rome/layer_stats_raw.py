@@ -1,8 +1,8 @@
 import os
 from pathlib import Path
+
 import torch
 from datasets import load_dataset
-#from modelscope import learad_dataset
 from tqdm.auto import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -16,7 +16,6 @@ from .tok_dataset import (
     flatten_masked_batch,
     length_collation,
 )
-
 
 STAT_TYPES = {
     "mom2": SecondMoment,
@@ -36,9 +35,9 @@ def main():
     def aa(*args, **kwargs):
         parser.add_argument(*args, **kwargs)
 
-    aa("--model_name", default="/data/jianghc/llama3-8b-instruct", choices=["gpt2-xl", "EleutherAI/gpt-j-6B","/data/jianghc/llama3-8b-instruct"])
+    aa("--model_name", default="gpt2-xl", choices=["gpt2-xl", "EleutherAI/gpt-j-6B"])
     aa("--dataset", default="wikipedia", choices=["wikitext", "wikipedia"])
-    aa("--layers", default=[4,5,6,7,8], type=lambda x: list(map(int, x.split(","))))
+    aa("--layers", default=[17], type=lambda x: list(map(int, x.split(","))))
     aa("--to_collect", default=["mom2"], type=lambda x: x.split(","))
     aa("--sample_size", default=100000, type=lambda x: None if x == "all" else int(x))
     aa("--batch_tokens", default=None, type=lambda x: None if x == "any" else int(x))
@@ -58,9 +57,9 @@ def main():
             "Note, the statistics are collected over the inputs to the second MLP layer, "
             "or equivalently the outputs of the first MLP layer."
         )
-        # proj_layer_name = "c_proj" if "gpt2" in args.model_name else "fc_out"
-        # layer_name = f"transformer.h.{layer_num}.mlp.{proj_layer_name}"
-        layer_name = f"model.layers.{layer_num}.mlp.down_proj"
+        proj_layer_name = "c_proj" if "gpt2" in args.model_name else "fc_out"
+        layer_name = f"transformer.h.{layer_num}.mlp.{proj_layer_name}"
+
         layer_stats(
             model,
             tokenizer,
@@ -89,74 +88,24 @@ def layer_stats(
     download=True,
     progress=tqdm,
     force_recompute=False,
-    hparams=None
 ):
     """
     Function to load or compute cached stats.
     """
 
     def get_ds():
-        # Load_From_File
-        # from datasets import Dataset
-        # raw_ds = Dataset.from_file('data/wikipedia-train.arrow')
-        # raw_ds = {'train': raw_ds}
-        '''
         raw_ds = load_dataset(
             ds_name,
-            dict(wikitext="wikitext-103-raw-v1", wikipedia="20200501.en")[ds_name],trust_remote_code=True ,
-        )
-        '''
-        #raw_ds = load_dataset( ds_name, dict(wikitext="wikitext-103-raw-v1", wikipedia="20200501.en")[ds_name],trust_remote_code=True ,revision="master" )
-        #pdb.set_trace()
-        raw_ds = load_dataset(
-            ds_name,
-            #dict(wikitext="wikitext-103-raw-v1", wikipedia="20220301.en")[ds_name],
             dict(wikitext="wikitext-103-raw-v1", wikipedia="20200501.en")[ds_name],
-            )
-        if hasattr(model.config, 'n_positions'):
-            maxlen = model.config.n_positions
-        elif hasattr(model.config, 'max_sequence_length'):
-            maxlen = model.config.max_sequence_length
-        elif hasattr(model.config, 'max_position_embeddings'):
-            maxlen = model.config.max_position_embeddings
-        elif hasattr(model.config,'seq_length'):
-            maxlen = model.config.seq_length
-        else:
-            raise NotImplementedError
-                
-        if hasattr(model.config, 'model_type') and 'mistral' in model.config.model_type:
-            if hasattr(model.config, 'sliding_window') and model.config.sliding_window:
-                maxlen = model.config.sliding_window or 4096
-            else:
-                maxlen = 4096
-        if hasattr(model.config, 'model_type') and 'qwen2' in model.config.model_type:
-            maxlen = 4096
-
+        )
+        maxlen = model.config.n_positions
         if batch_tokens is not None and batch_tokens < maxlen:
             maxlen = batch_tokens
         return TokenizedDataset(raw_ds["train"], tokenizer, maxlen=maxlen)
 
     # Continue with computation of statistics
-    batch_size = 10  # Examine this many dataset texts at once
-    if hasattr(model.config, 'n_positions'):
-        npos = model.config.n_positions
-    elif hasattr(model.config, 'max_sequence_length'):
-        npos = model.config.max_sequence_length
-    elif hasattr(model.config, 'max_position_embeddings'):
-        npos = model.config.max_position_embeddings
-    elif hasattr(model.config,'seq_length'):
-        npos = model.config.seq_length
-    else:
-        raise NotImplementedError
-        
-    if hasattr(model.config, 'model_type') and 'mistral' in model.config.model_type:
-        if hasattr(model.config, 'sliding_window') and model.config.sliding_window:
-            npos = model.config.sliding_window or 4096
-        else:
-            npos = 4096
-    if hasattr(model.config, 'model_type') and 'qwen2' in model.config.model_type:
-            npos = 4096
-
+    batch_size = 100  # Examine this many dataset texts at once
+    npos = model.config.n_positions
     if batch_tokens is None:
         batch_tokens = npos * 3  # Sort and divide into batches with this many tokens
     if precision is None:
@@ -166,16 +115,26 @@ def layer_stats(
     if batch_tokens < npos:
         size_suffix = "_t{batch_tokens}" + size_suffix
     if model_name is None:
-        # model_name = model.config._name_or_path.replace("/", "_")
-        model_name = model.config._name_or_path.rsplit("/")[-1]
+        model_name = model.config._name_or_path.replace("/", "_")
 
     stats_dir = Path(stats_dir)
     file_extension = f"{model_name}/{ds_name}_stats/{layer_name}_{precision}_{'-'.join(sorted(to_collect))}{size_suffix}.npz"
     filename = stats_dir / file_extension
 
-    print(f"Computing Cov locally....")
+    if not filename.exists() and download:
+        remote_url = f"{REMOTE_ROOT_URL}/data/stats/{file_extension}"
+        try:
+            print(f"Attempting to download {file_extension} from {remote_url}.")
+            (stats_dir / "/".join(file_extension.split("/")[:-1])).mkdir(
+                exist_ok=True, parents=True
+            )
+            torch.hub.download_url_to_file(remote_url, filename)
+            print("Successfully downloaded.")
+        except Exception as e:
+            print(f"Unable to download due to {e}. Computing locally....")
 
     ds = get_ds() if not filename.exists() else None
+
     if progress is None:
         progress = lambda x: x
 
@@ -205,6 +164,7 @@ def layer_stats(
                 feats = feats.to(dtype=dtype)
                 stat.add(feats)
     return stat
+
 
 if __name__ == "__main__":
     main()
