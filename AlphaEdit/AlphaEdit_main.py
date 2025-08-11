@@ -171,8 +171,8 @@ def get_cov(
     key = (model_name, layer_name)
 
     print('check do I really to extract this')
-    pdb.set_trace()
     print(f"Retrieving covariance statistics for {model_name} @ {layer_name}.")
+    pdb.set_trace()
     if key not in COV_CACHE or force_recompute:
         stat = layer_stats(
             model,
