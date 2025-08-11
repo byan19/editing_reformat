@@ -207,10 +207,8 @@ def main(
         del W_out
     if alg_name == "AlphaEdit":
         if os.path.exists(f'null_space_project.pt'):
-            pdb.set_trace()
             P = torch.load(f'null_space_project.pt')
         else:
-            pdb.set_trace()
             for i, layer in enumerate(hparams.layers):
                 P[i,:,:] = get_project(model,tok,layer,hparams)
             torch.save(P, "null_space_project.pt")
