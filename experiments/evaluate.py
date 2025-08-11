@@ -427,6 +427,7 @@ def main(
         print("Evaluation took", time() - start)
 def get_project(model, tok, layer, hparams):
     force_recompute = False
+    pdb.set_trace()
     cov = get_cov(
         model,
         tok,
