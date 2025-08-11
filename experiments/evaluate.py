@@ -212,7 +212,7 @@ def main(
             for i, layer in enumerate(hparams.layers):
                 P[i,:,:] = get_project(model,tok,layer,hparams)
             torch.save(P, "null_space_project.pt")
-        pdb.set_trace()
+        #pdb.set_trace()
     # hs = get_module_input_output_at_words(
     #         model,
     #         tok,
