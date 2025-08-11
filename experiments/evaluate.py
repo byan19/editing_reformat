@@ -206,9 +206,9 @@ def main(
                 P = torch.zeros((len(hparams.layers), W_out.shape[1], W_out.shape[1]), device="cpu")
         del W_out
     if alg_name == "AlphaEdit":
-        if os.path.exists(f'{run_dir}/null_space_project.pt'):
+        if os.path.exists(f'null_space_project.pt'):
             pdb.set_trace()
-            P = torch.load(f'{run_dir}/null_space_project.pt')
+            P = torch.load(f'null_space_project.pt')
         else:
             pdb.set_trace()
             for i, layer in enumerate(hparams.layers):
