@@ -208,6 +208,7 @@ def main(
     if alg_name == "AlphaEdit":
         for i, layer in enumerate(hparams.layers):
             P[i,:,:] = get_project(model,tok,layer,hparams)
+        pdb.set_trace()
         torch.save(P, "null_space_project.pt")
     # hs = get_module_input_output_at_words(
     #         model,
@@ -427,6 +428,7 @@ def main(
         print("Evaluation took", time() - start)
 def get_project(model, tok, layer, hparams, dir ='data/stats/llama3-8b-instruct/wikipedia_stats' ):
     force_recompute = False
+    print('project computation')
     cov = np.load(f'{dir}/{hparams.rewrite_module_tmp.format(layer)}_float32_mom2_100000.npz')['mom2.mom2']
     cov = torch.from_numpy(cov)
     '''
