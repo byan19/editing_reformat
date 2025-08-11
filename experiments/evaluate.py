@@ -425,9 +425,31 @@ def main(
         #         nethook.get_parameter(model, k)[...] = v.to("cuda")
 
         print("Evaluation took", time() - start)
-def get_project(model, tok, layer, hparams):
+def get_project(model, tok, layer, hparams, dir ='data/stats/llama3-8b-instruct/wikipedia_stats' ):
     force_recompute = False
-    pdb.set_trace()
+    cov = np.load(f'{dir}/{hparams.rewrite_module_tmp.format(layer)}_float32_mom2_100000.npz')['mom2.mom2']
+    cov = torch.from_numpy(cov)
+    '''
+    cov = get_cov(
+        model,
+        tok,
+        hparams.rewrite_module_tmp.format(layer),
+        hparams.mom2_dataset,
+        hparams.mom2_n_samples
+        if not force_recompute
+        else hparams.mom2_n_samples // 10,
+        hparams.mom2_dtype,
+        force_recompute=force_recompute,
+    ).cpu()
+    '''
+    U, S, _ = torch.linalg.svd(cov, full_matrices=False)
+    threshold = hparams.nullspace_threshold
+    small_singular_indices = (S < threshold).nonzero(as_tuple=True)[0]
+    print(len(small_singular_indices))
+    return U[:, small_singular_indices] @ U[:, small_singular_indices].T
+
+def get_project_original(model, tok, layer, hparams):
+    force_recompute = False
     cov = get_cov(
         model,
         tok,
