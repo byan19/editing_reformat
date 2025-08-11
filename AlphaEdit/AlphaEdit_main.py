@@ -15,6 +15,7 @@ from util.globals import *
 from .compute_ks import compute_ks
 from .compute_z import compute_z, get_module_input_output_at_words, find_fact_lookup_idx
 from .AlphaEdit_hparams import AlphaEditHyperParams
+import pdb
 # Cache variable(s)
 CONTEXT_TEMPLATES_CACHE = None
 COV_CACHE = {}
@@ -169,6 +170,7 @@ def get_cov(
     model_name = model.config._name_or_path.replace("/", "_")
     key = (model_name, layer_name)
 
+    pdb.set_trace()
     print(f"Retrieving covariance statistics for {model_name} @ {layer_name}.")
     if key not in COV_CACHE or force_recompute:
         stat = layer_stats(
