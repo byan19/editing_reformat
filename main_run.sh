@@ -1,3 +1,4 @@
+#!/bin/bash
 python -m experiments.evaluate \
 --alg_name=AlphaEdit \
 --model_name=meta-llama/Meta-Llama-3-8B-Instruct \
