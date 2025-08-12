@@ -574,7 +574,6 @@ if __name__ == "__main__":
     )
     parser.set_defaults(skip_generation_tests=False, conserve_memory=False)
     args = parser.parse_args()
-    pdb.set_trace()
     main(
         args.alg_name,
         args.model_name,
