@@ -82,6 +82,7 @@ class SSTEval():
         for s, example in enumerate(self.eval_dataset):
             input_prompt, sentence, label = self._create_prompt(example, gen_len)
             labels.append(label)
+            pdb.set_trace()
             input_prompt_ids = self.tokenizer.encode(input_prompt, return_tensors='pt').to('cuda')
             input_prompt_text = self.tokenizer.decode(input_prompt_ids[0], skip_special_tokens=True)
             
