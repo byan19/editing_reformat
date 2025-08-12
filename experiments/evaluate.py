@@ -72,6 +72,7 @@ def main(
     use_cache: bool = False,
 ):
     # Set algorithm-specific variables
+    pdb.set_trace()
     device = set_device()
     params_class, apply_algo = ALG_DICT[alg_name]
 
