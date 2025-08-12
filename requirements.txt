@@ -10,3 +10,7 @@ pyarrow==17.0.0
 scipy==1.15.2
 scikit-learn==1.6.1
 nltk==3.9.1
+# for installing spacy
+# pip install -U pip setuptools wheel
+# pip install spacy
+
