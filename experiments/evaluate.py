@@ -7,7 +7,6 @@ from typing import Tuple, Union
 import numpy as np
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from util.tools import set_device
 from baselines.ft import FTHyperParams, apply_ft_to_model
 from baselines.mend import MENDHyperParams, MendRewriteExecutor
 from dsets import (
