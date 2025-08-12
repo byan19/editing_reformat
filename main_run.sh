@@ -1,5 +1,5 @@
 #!/bin/bash
-CUDA_VISIBLE_DEVICES=0 python experiments/evaluate.py \
+CUDA_VISIBLE_DEVICES=0 python experiments.evaluate \
 --alg_name=AlphaEdit \
 --model_name=meta-llama/Meta-Llama-3-8B-Instruct \
 --hparams_fname=Llama3-8B.json \
