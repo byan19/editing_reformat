@@ -70,8 +70,9 @@ def main(
     use_cache: bool = False,
 ):
     # Set algorithm-specific variables
+    alpha_startingtime = time()
     params_class, apply_algo = ALG_DICT[alg_name]
-
+    
     # Determine run directory
     # Create new dir if not continuing from prev run OR prev run doesn't exist
     if (
@@ -427,6 +428,7 @@ def main(
         #         nethook.get_parameter(model, k)[...] = v.to("cuda")
 
         print("Evaluation took", time() - start)
+    print(f'@@@@@@@@@@ total time cost: {time() -alpha_startingtime}')
 def get_project(model, tok, layer, hparams, dir ='data/stats/llama3-8b-instruct/wikipedia_stats' ):
     force_recompute = False
     print('project computation')
