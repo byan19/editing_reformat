@@ -492,6 +492,8 @@ def chunks(arr, n):
 
 
 if __name__ == "__main__":
+    pdb.set_trace()
+    torch.cuda.is_available()
     import argparse
 
     parser = argparse.ArgumentParser()
