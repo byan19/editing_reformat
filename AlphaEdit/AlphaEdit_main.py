@@ -15,6 +15,7 @@ from util.globals import *
 from .compute_ks import compute_ks
 from .compute_z import compute_z, get_module_input_output_at_words, find_fact_lookup_idx
 from .AlphaEdit_hparams import AlphaEditHyperParams
+from util.tools import set_device
 import pdb
 # Cache variable(s)
 CONTEXT_TEMPLATES_CACHE = None
@@ -33,7 +34,7 @@ def apply_AlphaEdit_to_model(
     Executes the MEMIT update algorithm for the specified update at the specified layer
     Invariant: model at beginning of function == model at end of function
     """
-
+    device = set_device()
     # Update target and print info
     requests = deepcopy(requests)
     for i, request in enumerate(requests):
@@ -76,7 +77,7 @@ def apply_AlphaEdit_to_model(
         ):
             try:
                 data = np.load(cache_fname)
-                z_list.append(torch.from_numpy(data["v_star"]).to("cuda"))
+                z_list.append(torch.from_numpy(data["v_star"]).to(device))
                 data_loaded = True
             except Exception as e:
                 print(f"Error reading cache file due to {e}. Recomputing...")

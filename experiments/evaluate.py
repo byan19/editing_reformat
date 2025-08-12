@@ -8,7 +8,7 @@ from typing import Tuple, Union
 import numpy as np
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
-
+from util.tools import set_device
 from baselines.ft import FTHyperParams, apply_ft_to_model
 from baselines.mend import MENDHyperParams, MendRewriteExecutor
 from dsets import (
@@ -72,6 +72,7 @@ def main(
     use_cache: bool = False,
 ):
     # Set algorithm-specific variables
+    device = set_device()
     params_class, apply_algo = ALG_DICT[alg_name]
 
     # Determine run directory
@@ -117,7 +118,7 @@ def main(
     if type(model_name) is str:
         print("Instantiating model")
         #model = AutoModelForCausalLM.from_pretrained(model_name).cuda()
-        model = AutoModelForCausalLM.from_pretrained(model_name).cuda()
+        model = AutoModelForCausalLM.from_pretrained(model_name).to(device)
         tok = AutoTokenizer.from_pretrained(model_name)
         tok.pad_token = tok.eos_token
     else:
