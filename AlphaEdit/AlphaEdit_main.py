@@ -34,7 +34,6 @@ def apply_AlphaEdit_to_model(
     Executes the MEMIT update algorithm for the specified update at the specified layer
     Invariant: model at beginning of function == model at end of function
     """
-    device = set_device()
     # Update target and print info
     requests = deepcopy(requests)
     for i, request in enumerate(requests):
@@ -77,7 +76,7 @@ def apply_AlphaEdit_to_model(
         ):
             try:
                 data = np.load(cache_fname)
-                z_list.append(torch.from_numpy(data["v_star"]).to(device))
+                z_list.append(torch.from_numpy(data["v_star"]).to("cuda"))
                 data_loaded = True
             except Exception as e:
                 print(f"Error reading cache file due to {e}. Recomputing...")
