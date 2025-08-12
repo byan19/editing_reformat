@@ -26,7 +26,7 @@ Param=${Target_Para_List[$idx]}
 Tunning=${Tunning_list[$idx]}
 
 
-sessionname=version4_NER_test
+sessionname=editing_test
 
 
 File=bashscript/subrun/alphaedit.sh
