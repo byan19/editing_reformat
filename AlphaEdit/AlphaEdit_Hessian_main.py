@@ -128,9 +128,9 @@ def apply_AlphaEdit_to_model(
         repeat_factor = (layer_ks.size(1) // targets.size(1))
         targets = targets.repeat_interleave(repeat_factor, dim=1)
         
+        # need to modify this part, so that the model can intergrate Hessian matrix.
         resid = targets / (len(hparams.layers) - i)  # Distribute residual across layers
         # AX= B torch.linalg.solve(A,B)
-        pdb.set_trace()
         upd_matrix = torch.linalg.solve(
                 P[i,:,:].cuda() @ (layer_ks @ layer_ks.T + cache_c[i,:,:].cuda()) + hparams.L2*torch.eye(layer_ks.shape[0], dtype=torch.float,device="cuda"), # Matrix A
             P[i,:,:].cuda() @ layer_ks @ resid.T # matrix B
