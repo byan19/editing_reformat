@@ -22,7 +22,6 @@ def compute_z(
     Computes the value (right) vector for the rank-1 update.
     Runs a simple optimization procedure.
     """
-    pdb.set_trace()
 
     # Get model parameters
     lm_w, ln_f = (
@@ -115,7 +114,6 @@ def compute_z(
     nethook.set_requires_grad(False, model)
 
     # Execute optimization
-    pdb.set_trace()
     for it in range(hparams.v_num_grad_steps):
         opt.zero_grad()
 
