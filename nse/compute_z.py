@@ -192,7 +192,6 @@ def compute_z(
     print(
         f"Init norm {target_init.norm()} | Delta norm {delta.norm()} | Target norm {target.norm()}"
     )
-    pdb.set_trace()
     return target
 
 

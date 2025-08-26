@@ -157,6 +157,7 @@ def main(
                 / f"{model_name.replace('/', '_')}_{alg_name}"
                 / f"{ds_name}_layer_{{}}_clamp_{{}}_case_{{}}.npz"
         )
+        pdb.set_trace()
         for record in ds:
             # Retrieve k/v pair if already stored in cache
             cache_fname = (
@@ -207,8 +208,6 @@ def main(
                 P = torch.zeros((len(hparams.layers), W_out.shape[1], W_out.shape[1]), device="cpu")
         del W_out
         
-    pdb.set_trace()
-    
     if alg_name == "AlphaEdit":
         if os.path.exists(f'null_space_project.pt'):
             P = torch.load(f'null_space_project.pt')
