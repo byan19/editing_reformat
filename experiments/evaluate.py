@@ -132,7 +132,6 @@ def main(
     if num_edits > 1:
         assert ds_name != "cf", f"{ds_name} does not support multiple edits"
     
-    pdb.set_trace()
     ds_class, ds_eval_method = DS_DICT[ds_name]
     ds = ds_class(DATA_DIR, tok=tok, size=dataset_size_limit)
     # Get cache templates
