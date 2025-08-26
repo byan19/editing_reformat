@@ -8,7 +8,7 @@ from rome import repr_tools
 from util import nethook
 
 from .nse_hparams import NSEHyperParams
-
+import pdb
 
 def compute_z(
     model: AutoModelForCausalLM,
