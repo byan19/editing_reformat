@@ -151,6 +151,7 @@ def main(
             )
         print(f"Will load cache from {cache_template}")
     if alg_name == "NSE":
+        pdb.set_trace()
         cache_template = (
                 KV_DIR
                 / f"{model_name.replace('/', '_')}_{alg_name}"
