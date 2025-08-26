@@ -22,6 +22,7 @@ def compute_z(
     Computes the value (right) vector for the rank-1 update.
     Runs a simple optimization procedure.
     """
+    pdb.set_trace()
 
     # Get model parameters
     lm_w, ln_f = (
