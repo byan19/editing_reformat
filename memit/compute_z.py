@@ -8,7 +8,7 @@ from rome import repr_tools
 from util import nethook
 
 from .memit_hparams import MEMITHyperParams
-
+import pdb
 
 def compute_z(
     model: AutoModelForCausalLM,
@@ -22,6 +22,7 @@ def compute_z(
     Computes the value (right) vector for the rank-1 update.
     Runs a simple optimization procedure.
     """
+    pdb.set_trace()
 
     # Get model parameters
     lm_w, ln_f = (
