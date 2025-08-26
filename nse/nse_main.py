@@ -32,6 +32,7 @@ def apply_nse_to_model(
     Executes the MEMIT update algorithm for the specified update at the specified layer
     Invariant: model at beginning of function == model at end of function
     """
+    pdb.set_trace()
 
     deltas = {}
 
