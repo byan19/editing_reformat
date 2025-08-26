@@ -1,3 +1,4 @@
+import pdb
 from copy import deepcopy
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -90,6 +91,7 @@ def apply_nse_to_model(
     #     print(f"Cluster {cluster_label}: {len(members)} elements")
     
 
+    pdb.set_trace()
     z_list = []
     for request in requests:
         # Retrieve k/v pair if already stored in cache
