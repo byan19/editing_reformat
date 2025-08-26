@@ -204,11 +204,13 @@ def apply_nse_to_model(
                 upd_matrix = torch.zeros_like(weights[weight_name]).T.double()
             elif hparams.model_name in ["EleutherAI_gpt-j-6B","Llama3-8B"]:
                 upd_matrix = torch.zeros_like(weights[weight_name]).double()
+                
             selected_rows = neuron_indices
             adj_k = torch.linalg.solve(
                 hparams.mom2_update_weight * cov[selected_rows, :][:, selected_rows].double() + cache_c[i,:,:][selected_rows, :][:, selected_rows].cuda() + layer_ks[selected_rows, :] @ layer_ks[selected_rows, :].T,
-               layer_ks[selected_rows, :],
-            )  
+                layer_ks[selected_rows, :],
+            )
+            
             resid = targets/(len(hparams.layers) - i)
             partial_upd_matrix = resid @ adj_k.T
             # Adjust update matrix shape

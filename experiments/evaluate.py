@@ -35,6 +35,7 @@ from nse import NSEHyperParams
 from nse.nse_main import apply_nse_to_model
 from glue_eval.glue_eval import GLUEEval
 import pdb
+
 ALG_DICT = {
     "AlphaEdit": (AlphaEditHyperParams, apply_AlphaEdit_to_model),
     "MEMIT_seq": (MEMITHyperParams, apply_memit_seq_to_model),
@@ -130,7 +131,8 @@ def main(
 
     if num_edits > 1:
         assert ds_name != "cf", f"{ds_name} does not support multiple edits"
-
+    
+    pdb.set_trace()
     ds_class, ds_eval_method = DS_DICT[ds_name]
     ds = ds_class(DATA_DIR, tok=tok, size=dataset_size_limit)
     # Get cache templates
@@ -204,6 +206,9 @@ def main(
             if alg_name == "AlphaEdit":
                 P = torch.zeros((len(hparams.layers), W_out.shape[1], W_out.shape[1]), device="cpu")
         del W_out
+        
+    pdb.set_trace()
+    
     if alg_name == "AlphaEdit":
         if os.path.exists(f'null_space_project.pt'):
             P = torch.load(f'null_space_project.pt')
@@ -225,7 +230,9 @@ def main(
     # del hs
     glue_save_location = str(run_dir) + '/' + 'glue_eval/'
     os.makedirs(glue_save_location, exist_ok=True)
+    
     cnt = 0
+    
     for record_chunks in chunks(ds, num_edits):
         case_result_template = str(run_dir / "{}_edits-case_{}.json")
         print(f"=================================================================={cnt+1}_edit==================================================================")
