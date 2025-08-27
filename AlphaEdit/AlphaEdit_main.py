@@ -35,7 +35,6 @@ def apply_AlphaEdit_to_model(
     Invariant: model at beginning of function == model at end of function
     """
     # Update target and print info
-    pdb.set_trace()
     requests = deepcopy(requests)
     for i, request in enumerate(requests):
         if request["target_new"]["str"][0] != " ":

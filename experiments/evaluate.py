@@ -273,7 +273,6 @@ def main(
                 json.dump(glue_results, f, indent=4)
                 
         # getting start with running
-        pdb.set_trace()
         start = time()
         # runing on the AlphaEdit, Menit and NSE
         if any(alg in alg_name for alg in ["AlphaEdit", "MEMIT_seq", "NSE"]):
