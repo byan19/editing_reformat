@@ -27,7 +27,7 @@ Tunning=${Tunning_list[$idx]}
 
 
 sessionname=editing_test2
-sessionname=editing_nse_2
+sessionname=editing_alphaedit
 
 
 File=bashscript/subrun/nse.sh
