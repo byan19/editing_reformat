@@ -10,7 +10,7 @@ from glue_eval.dialogue_eval import DIALOGUE_Eval
 from glue_eval.nli_eval import NLIEval
 from util.perplexity import perplexity
 from datasets import load_dataset
-
+import pdb
 
 class GLUEEval():
     def __init__(self, model, tokenizer, number_of_tests = None, sst_number_of_few_shots = 0, mrpc_number_of_few_shots = 0, cola_number_of_few_shots = 0, rte_number_of_few_shots = 0, mmlu_number_of_few_shots = 0, sentiment_analysis_number_of_few_shots = 0, nli_number_of_few_shots = 0, dialogue_number_of_few_shots = 0):
@@ -51,6 +51,7 @@ class GLUEEval():
                         )
             glue_results['perplexity'] = perplexity(self.model, self.tokenizer, " ".join(raw_ds["train"]['text'][:20]), max_input_length=100)
             
+        pdb.set_trace()
         if sst_flag:
             result_dict, generations = self.sst_eval.evaluate(gen_len)
             glue_results['sst'] = result_dict
