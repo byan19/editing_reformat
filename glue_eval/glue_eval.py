@@ -51,7 +51,6 @@ class GLUEEval():
                         )
             glue_results['perplexity'] = perplexity(self.model, self.tokenizer, " ".join(raw_ds["train"]['text'][:20]), max_input_length=100)
             
-        pdb.set_trace()
         if sst_flag:
             result_dict, generations = self.sst_eval.evaluate(gen_len)
             glue_results['sst'] = result_dict
