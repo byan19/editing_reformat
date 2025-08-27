@@ -31,6 +31,7 @@ sessionname=editing_nse_2
 
 
 File=bashscript/subrun/nse.sh
+File=bashscript/subrun/alphaedit.sh
 
 CHECK=${sessionname}
 

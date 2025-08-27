@@ -157,7 +157,6 @@ def main(
                 / f"{model_name.replace('/', '_')}_{alg_name}"
                 / f"{ds_name}_layer_{{}}_clamp_{{}}_case_{{}}.npz"
         )
-        pdb.set_trace()
         for record in ds:
             # Retrieve k/v pair if already stored in cache
             cache_fname = (
