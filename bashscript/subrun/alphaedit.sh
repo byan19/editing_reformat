@@ -6,5 +6,6 @@ CUDA_VISIBLE_DEVICES=0 python -m experiments.evaluate \
 --ds_name=mcf \
 --dataset_size_limit=2000 \
 --num_edits=100 \
---downstream_eval_steps=5
+--downstream_eval_steps=5 \
+--debugging_moode=1 \
 #--model_name=meta-llama/Llama-2-7b-hf \

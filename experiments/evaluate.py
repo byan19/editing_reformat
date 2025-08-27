@@ -70,6 +70,7 @@ def main(
     dir_name: str,
     num_edits: int = 1,
     use_cache: bool = False,
+    debugging_mood: int = 0,
 ):
     # Set algorithm-specific variables
     alpha_startingtime = time()
@@ -255,7 +256,10 @@ def main(
         etc_args = dict(cache_template=cache_template) if any(alg in alg_name for alg in ["ROME", "MEMIT","AlphaEdit", "MEMIT_seq", "MEMIT_prune", "NSE"]) else dict()
         seq_args = dict(cache_c=cache_c) if any(alg in alg_name for alg in ["AlphaEdit", "MEMIT_seq", "NSE"]) else dict()
         nc_args = dict(P = P) if any(alg in alg_name for alg in ["AlphaEdit"]) else dict()
-        if cnt == 0 and args.downstream_eval_steps > 0:#do initial GLUE EVAL WITH ORIGINAL MODEL
+        
+        #do initial GLUE EVAL WITH ORIGINAL MODEL
+        if cnt == 0 and args.downstream_eval_steps > 0 and not debugging_mood:
+            print('generate GLUEVAL')
             glue_results = {'edit_num': -1}
 
             out_file = glue_save_location + "base.json"
@@ -267,7 +271,10 @@ def main(
             output_filename = out_file.replace('.json', '_glue.json')
             with open(output_filename, "w") as f:
                 json.dump(glue_results, f, indent=4)
+                
+            
         start = time()
+        # runing on the AlphaEdit, Menit and NSE
         if any(alg in alg_name for alg in ["AlphaEdit", "MEMIT_seq", "NSE"]):
             edited_model, cache_c = apply_algo(
                 model,
@@ -287,6 +294,7 @@ def main(
                 **seq_args,
                 **nc_args,
             )
+        # runing on MEMIT_prune
         elif alg_name == "MEMIT_prune":
             if cnt == 0:
                 edited_model, weights_copy = apply_algo(
@@ -576,6 +584,13 @@ if __name__ == "__main__":
         default=0,
         help="If we want to do sequential editing or not",
     )
+    
+    parser.add_argument(
+        "--debugging_mood",
+        type=int,
+        default=0,
+        help="Debugging",
+    )
     parser.set_defaults(skip_generation_tests=False, conserve_memory=False)
     args = parser.parse_args()
     main(
@@ -591,4 +606,5 @@ if __name__ == "__main__":
         dir_name=args.alg_name,
         num_edits=args.num_edits,
         use_cache=args.use_cache,
+        debugging_mood=args.debugging_mood
     )
