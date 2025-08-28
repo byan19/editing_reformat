@@ -362,8 +362,8 @@ def compute_z(
                 noise_holder.append(noise)
                 return input
             
-            for layer in model.model.layers:
-                hook = layer.register_forward_pre_hook(hook_fn_local)
+            for layer_ in model.model.layers:
+                hook = layer_.register_forward_pre_hook(hook_fn_local)
                 hooks.append(hook)
             
             noise_output = model(**input_tok, output_hidden_states=True)
