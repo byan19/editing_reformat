@@ -22,8 +22,8 @@ from experiments.py.eval_utils_counterfact import compute_rewrite_quality_counte
 from experiments.py.eval_utils_zsre import compute_rewrite_quality_zsre
 from experiments.py.eval_utils_mquake import compute_rewrite_quality_mquake
 from memit import MEMITHyperParams
-#from memit.compute_z import get_module_input_output_at_words, compute_z
-from nse.compute_z import get_module_input_output_at_words, compute_z
+from memit.compute_z import get_module_input_output_at_words, compute_z
+#from nse.compute_z import get_module_input_output_at_words, compute_z
 from memit.memit_main import apply_memit_to_model, get_context_templates
 from memit.memit_seq_main import apply_memit_seq_to_model
 from memit.memit_rect_main import apply_memit_rect_to_model
