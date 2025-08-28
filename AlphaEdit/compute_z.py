@@ -321,10 +321,7 @@ def compute_z(
 
             # Compute distribution for KL divergence
             kl_logits = torch.stack(
-                [
-                    logits[i - len(kl_prompts), idx, :]
-                    for i, idx in enumerate(lookup_idxs[-len(kl_prompts) :])
-                ],
+                [ logits[i - len(kl_prompts), idx, :] for i, idx in enumerate(lookup_idxs[-len(kl_prompts) :]) ],
                 dim=0,
             )
             kl_log_probs = torch.nn.functional.log_softmax(kl_logits, dim=1)
@@ -388,13 +385,18 @@ def compute_z(
         ).squeeze(2)
         mask = (rewriting_targets != -100).float()
         
-        pdb.set_trace()
         ## compute the flatness loss
         flat_loss = 0.0
         pred_loc  = mask.argmax(dim = 1)
-        noise_hidden_states = noise_hidden_states[:len(rewriting_prompts)]
-        hidden_states= hidden_states[:len(rewriting_prompts)]
+        
+        #noise_hidden_states = noise_hidden_states[:len(rewriting_prompts)]
+        #hidden_states= hidden_states[:len(rewriting_prompts)]
+        
+        noise_hidden_states = [tmp[:len(rewriting_prompts)] for tmp in noise_hidden_states ]
+        hidden_states = [tmp[:len(rewriting_prompts)] for tmp in hidden_states ]
 
+        logits = logits[: len(rewriting_prompts)]
+        
         for i in range(1, len(hidden_states) - 1):
             '''
             conver_loss += torch.nn.functional.mse_loss(
