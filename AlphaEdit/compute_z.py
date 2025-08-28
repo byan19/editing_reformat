@@ -328,6 +328,8 @@ def compute_z(
             if kl_distr_init is None:
                 kl_distr_init = kl_log_probs.detach().clone()
                 
+            pdb.set_trace()
+            
             ####################################
             # flatness approximation
             ####################################
@@ -368,7 +370,8 @@ def compute_z(
                 
                 noise_output = model(**input_tok, output_hidden_states=True)
                 noise_hidden_states = noise_output.hidden_states
-        
+            
+            pdb.set_trace()
 
         # Compute loss on rewriting targets
         output=tr[hparams.layer_module_tmp.format(loss_layer)].output[0]
