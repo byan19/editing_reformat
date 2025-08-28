@@ -357,7 +357,7 @@ def get_module(model, name):
     """
     Finds the named module within the given model.
     """
-    pdb.set_trace()
+    #pdb.set_trace()
     for n, m in model.named_modules():
         if n == name:
             return m
