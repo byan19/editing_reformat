@@ -316,7 +316,8 @@ def compute_z(
             #logits = model(**input_tok).logits
             
             output = model(**input_tok,output_hidden_states=True)
-            hidden_states = output.hidden_states[layer-1: layer+1]
+            #hidden_states = output.hidden_states[layer-1: layer+1]
+            hidden_states = output.hidden_states[layer: layer+2]
             logits = output.logits
 
             # Compute distribution for KL divergence
@@ -371,7 +372,7 @@ def compute_z(
                 hooks.append(model.model.layers[layer].register_forward_pre_hook(hook_fn_local))
                 
                 noise_output = model(**input_tok, output_hidden_states=True)
-                noise_hidden_states = noise_output.hidden_states[layer: layer+1]
+                noise_hidden_states = noise_output.hidden_states[layer: layer+2]
                 
             
 
