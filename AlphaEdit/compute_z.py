@@ -298,6 +298,7 @@ def compute_z(
     opt = torch.optim.Adam([delta], lr=hparams.v_lr)
     nethook.set_requires_grad(False, model)
 
+    pdb.set_trace()
     # Execute optimization
     for it in range(hparams.v_num_grad_steps):
         opt.zero_grad()
