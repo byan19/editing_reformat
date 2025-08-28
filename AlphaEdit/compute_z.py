@@ -377,10 +377,10 @@ def compute_z(
         pdb.set_trace()
         # Compute loss on rewriting targets
         output=tr[hparams.layer_module_tmp.format(loss_layer)].output[0]
-        if output.shape[1]!=rewriting_targets.shape[1]:
-            output=torch.transpose(output, 0, 1)
+        if output.shape[1]!=rewriting_targets.shape[1]: output=torch.transpose(output, 0, 1)
         full_repr = output[:len(rewriting_prompts)]
-
+        
+        
         log_probs = torch.log_softmax(ln_f(full_repr) @ lm_w.to(full_repr.device) + lm_b.to(full_repr.device), dim=2)
         loss = torch.gather(
             log_probs,
@@ -393,6 +393,9 @@ def compute_z(
         ## compute the flatness loss
         flat_loss = 0.0
         pred_loc  = mask.argmax(dim = 1)
+        noise_hidden_states = noise_hidden_states[:len(rewriting_prompts)]
+        hidden_states= hidden_states[:len(rewriting_prompts)]
+
         for i in range(1, len(hidden_states) - 1):
             '''
             conver_loss += torch.nn.functional.mse_loss(
