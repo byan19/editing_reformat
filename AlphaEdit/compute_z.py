@@ -325,7 +325,9 @@ def compute_z(
                 [ logits[i - len(kl_prompts), idx, :] for i, idx in enumerate(lookup_idxs[-len(kl_prompts) :]) ],
                 dim=0,
             )
+            
             kl_log_probs = torch.nn.functional.log_softmax(kl_logits, dim=1)
+            
             if kl_distr_init is None:
                 kl_distr_init = kl_log_probs.detach().clone()
                 
@@ -375,6 +377,7 @@ def compute_z(
                 noise_hidden_states = noise_output.hidden_states[layer: layer+2]
                 
             
+
 
         # Compute loss on rewriting targets
         output=tr[hparams.layer_module_tmp.format(loss_layer)].output[0]
