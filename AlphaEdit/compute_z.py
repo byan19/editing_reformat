@@ -8,6 +8,7 @@ from rome import repr_tools
 from util import nethook
 
 from .AlphaEdit_hparams import AlphaEditHyperParams
+import pdb
 
 
 def compute_z_original(
@@ -369,8 +370,7 @@ def compute_z(
                 
                 noise_output = model(**input_tok, output_hidden_states=True)
                 noise_hidden_states = noise_output.hidden_states
-
-
+        pdb.set_trace()
         # Compute loss on rewriting targets
         output=tr[hparams.layer_module_tmp.format(loss_layer)].output[0]
         if output.shape[1]!=rewriting_targets.shape[1]:
