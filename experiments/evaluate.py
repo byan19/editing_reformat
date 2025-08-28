@@ -274,6 +274,7 @@ def main(
                 
         # getting start with running
         start = time()
+        pdb.set_trace()
         # runing on the AlphaEdit, Menit and NSE
         if any(alg in alg_name for alg in ["AlphaEdit", "MEMIT_seq", "NSE"]):
             edited_model, cache_c = apply_algo(
