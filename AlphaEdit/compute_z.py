@@ -408,8 +408,8 @@ def compute_z(
         grad_noise = noise_hidden_states[1][torch.arange(logits.size(0)), pred_loc] - \
                      noise_hidden_states[0][torch.arange(logits.size(0)), pred_loc]
         
-        grad = (hidden_states[1][torch.arange(logits.size(0)), pred_loc] - \
-                hidden_states[0][torch.arange(logits.size(0)), pred_loc])
+        grad = hidden_states[1][torch.arange(logits.size(0)), pred_loc] - \
+                hidden_states[0][torch.arange(logits.size(0)), pred_loc]
         # flat_loss += post_layer_norm_holder[i] @ (grad_noise - grad).t()/noise_scale
         # flat_loss += torch.nn.functional.softplus(post_layer_norm_holder[i] @ (grad_noise - grad).t()/noise_scale)
         
@@ -419,7 +419,8 @@ def compute_z(
         # precised version
         flat_loss += torch.nn.functional.softplus(
             -1 * noise_holder[0][torch.arange(logits.size(0)), pred_loc] @ (grad_noise - grad).t() / noise_scale)
-        pdb.set_trace()
+        gradient_check = torch.autograd.grad(flat_loss.mean(), delta, retain_graph = True)
+        print(f' check gradient, {gradient_check.norm().item()}')
         
         # Aggregate total losses
         nll_loss_each = -(loss * mask.to(loss.device)).sum(1) / target_ids.size(0)
