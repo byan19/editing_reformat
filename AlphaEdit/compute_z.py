@@ -299,6 +299,7 @@ def compute_z(
     nethook.set_requires_grad(False, model)
 
     # Execute optimization
+    pdb.set_trace()
     for it in range(hparams.v_num_grad_steps):
         opt.zero_grad()
 
