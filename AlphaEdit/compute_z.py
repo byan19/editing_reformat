@@ -420,6 +420,7 @@ def compute_z(
         flat_loss += torch.nn.functional.softplus(
             -1 * noise_holder[0][torch.arange(logits.size(0)), pred_loc] @ (grad_noise - grad).t() / noise_scale)
         gradient_check = torch.autograd.grad(flat_loss.mean(), delta, retain_graph = True)
+        
         print(f' check gradient, {gradient_check.norm().item()}')
         
         # Aggregate total losses
