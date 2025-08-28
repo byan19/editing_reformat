@@ -339,7 +339,7 @@ def compute_z(
                 print('flatness loss')
                 noise_scale =  0.001
                 noise_holder = []
-                flat_loss_lambda = 0.1
+                flat_loss_lambda = 1.0
                 hooks = []
                 
                 '''
