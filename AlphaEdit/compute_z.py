@@ -299,7 +299,6 @@ def compute_z(
     nethook.set_requires_grad(False, model)
 
     # Execute optimization
-    pdb.set_trace()
     for it in range(hparams.v_num_grad_steps):
         opt.zero_grad()
 
@@ -317,7 +316,7 @@ def compute_z(
             #logits = model(**input_tok).logits
             
             output = model(**input_tok,output_hidden_states=True)
-            hidden_states = output.hidden_states[layer-1, layer+1]
+            hidden_states = output.hidden_states[layer-1: layer+1]
             logits = output.logits
 
             # Compute distribution for KL divergence
