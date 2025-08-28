@@ -397,11 +397,6 @@ def compute_z(
         logits = logits[: len(rewriting_prompts)]
         
         for i in range(1, len(hidden_states) - 1):
-            '''
-            conver_loss += torch.nn.functional.mse_loss(
-                hidden_states[i][torch.arange(logits.size(0)), pred_loc]
-                , hidden_states[i + 1][torch.arange(logits.size(0)), pred_loc])
-            '''
             grad_noise = noise_hidden_states[i + 1][torch.arange(logits.size(0)), pred_loc] - \
                          noise_hidden_states[i][torch.arange(logits.size(0)), pred_loc]
             
@@ -424,16 +419,20 @@ def compute_z(
         kl_loss = hparams.kl_factor * torch.nn.functional.kl_div(
             kl_distr_init, kl_log_probs, log_target=True, reduction="batchmean"
         )
+        
         weight_decay = hparams.v_weight_decay * (
             torch.norm(delta) / torch.norm(target_init) ** 2
         )
+        
         # weight_decay = hparams.v_weight_decay * torch.norm(delta) ** 2
         loss = nll_loss + kl_loss.to(nll_loss.device) + weight_decay.to(nll_loss.device) + flat_loss_lambda  * flat_loss.mean()
+        
         print(
             f"loss {np.round(loss.item(), 3)} = {np.round(nll_loss.item(), 3)} + {np.round(kl_loss.item(), 3)} + {np.round(weight_decay.item(), 3)} + {np.round(flat_loss.mean().item(), 3)} "
             f"avg prob of [{request['target_new']['str']}] "
             f"{torch.exp(-nll_loss_each).mean().item()}"
         )
+        
         if loss < 5e-2:
             break
 
