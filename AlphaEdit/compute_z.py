@@ -418,11 +418,7 @@ def compute_z(
             flat_loss += torch.nn.functional.softplus(
                 -1 * noise_holder[i][torch.arange(logits.size(0)), pred_loc] @ (grad_noise - grad).t() / noise_scale)
         
-        #loss += flat_loss_lambda * flat_loss.mean()
-        flat_loss = flat_loss.mean()
-        pdb.set_trace()
-        flat_loss.backward()
-        pdb.set_trace()
+        loss += flat_loss_lambda * flat_loss.mean()
         
         # Aggregate total losses
         nll_loss_each = -(loss * mask.to(loss.device)).sum(1) / target_ids.size(0)
