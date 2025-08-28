@@ -328,46 +328,46 @@ def compute_z(
             if kl_distr_init is None:
                 kl_distr_init = kl_log_probs.detach().clone()
                 
-            ####################################
-            # flatness approximation
-            ####################################
-            flatness_loss = True
-            if flatness_loss:
-                print('flatness loss')
-                noise_scale =  0.001
-                noise_holder = []
-                flat_loss_lambda = 0.001
-                hooks = []
-                
-                '''
-                if 'gpt' in config['models'][0]:
-                    def hook_fn_local(module, input):
-                        """Function to add noise and store it."""
-                        noise = torch.randn_like(input[0]) * noise_scale
-                        post_layer_norm_holder.append(module.ln_2.base_layer.weight)
-                        input = (input[0] + noise * module.ln_2.base_layer.weight,)
-                        noise_holder.append(noise)
-                        return input
-                    
-                    for layer in self.model.transformer.h:
-                        hook = layer.register_forward_pre_hook(hook_fn_local)
-                        hooks.append(hook)
-                else:
-                '''
+        ####################################
+        # flatness approximation
+        ####################################
+        flatness_loss = True
+        if flatness_loss:
+            print('flatness loss')
+            noise_scale =  0.001
+            noise_holder = []
+            flat_loss_lambda = 0.001
+            hooks = []
+            
+            '''
+            if 'gpt' in config['models'][0]:
                 def hook_fn_local(module, input):
                     """Function to add noise and store it."""
                     noise = torch.randn_like(input[0]) * noise_scale
-                    #post_layer_norm_holder.append(module.post_attention_layernorm.weight)
-                    input = (input[0] + noise)
+                    post_layer_norm_holder.append(module.ln_2.base_layer.weight)
+                    input = (input[0] + noise * module.ln_2.base_layer.weight,)
                     noise_holder.append(noise)
                     return input
                 
-                for layer in model.model.layers:
+                for layer in self.model.transformer.h:
                     hook = layer.register_forward_pre_hook(hook_fn_local)
                     hooks.append(hook)
-                
-                noise_output = model(**input_tok, output_hidden_states=True)
-                noise_hidden_states = noise_output.hidden_states
+            else:
+            '''
+            def hook_fn_local(module, input):
+                """Function to add noise and store it."""
+                noise = torch.randn_like(input[0]) * noise_scale
+                #post_layer_norm_holder.append(module.post_attention_layernorm.weight)
+                input = (input[0] + noise)
+                noise_holder.append(noise)
+                return input
+            
+            for layer in model.model.layers:
+                hook = layer.register_forward_pre_hook(hook_fn_local)
+                hooks.append(hook)
+            
+            noise_output = model(**input_tok, output_hidden_states=True)
+            noise_hidden_states = noise_output.hidden_states
         
 
         # Compute loss on rewriting targets
@@ -428,7 +428,7 @@ def compute_z(
             torch.norm(delta) / torch.norm(target_init) ** 2
         )
         # weight_decay = hparams.v_weight_decay * torch.norm(delta) ** 2
-        loss = nll_loss + kl_loss.to(nll_loss.device) + weight_decay.to(nll_loss.device) + flat_loss.mean()
+        loss = nll_loss + kl_loss.to(nll_loss.device) + weight_decay.to(nll_loss.device) + flat_loss_lambda  *flat_loss.mean()
         print(
             f"loss {np.round(loss.item(), 3)} = {np.round(nll_loss.item(), 3)} + {np.round(kl_loss.item(), 3)} + {np.round(weight_decay.item(), 3)} "
             f"avg prob of [{request['target_new']['str']}] "
