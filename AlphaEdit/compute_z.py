@@ -420,6 +420,8 @@ def compute_z(
         
         loss += flat_loss_lambda * flat_loss.mean()
         pdb.set_trace()
+        loss.backward()
+        pdb.set_trace()
         
         # Aggregate total losses
         nll_loss_each = -(loss * mask.to(loss.device)).sum(1) / target_ids.size(0)
@@ -446,7 +448,11 @@ def compute_z(
         # Backpropagate
         loss.backward()
         opt.step()
-
+        
+        if flatness_loss:
+            for ele in hooks:
+                ele.remove()
+        
         # Project within L2 ball
         max_norm = hparams.clamp_norm_factor * target_init.norm()
         if delta.norm() > max_norm:
