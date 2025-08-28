@@ -298,7 +298,6 @@ def compute_z(
     opt = torch.optim.Adam([delta], lr=hparams.v_lr)
     nethook.set_requires_grad(False, model)
 
-    pdb.set_trace()
     # Execute optimization
     for it in range(hparams.v_num_grad_steps):
         opt.zero_grad()
@@ -365,7 +364,7 @@ def compute_z(
                     noise_holder.append(noise)
                     return input
                 
-                for layer in model.model.model.layers:
+                for layer in model.model.layers:
                     hook = layer.register_forward_pre_hook(hook_fn_local)
                     hooks.append(hook)
                 
