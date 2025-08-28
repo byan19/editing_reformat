@@ -374,6 +374,7 @@ def compute_z(
                 noise_hidden_states = noise_output.hidden_states
         
 
+        pdb.set_trace()
         # Compute loss on rewriting targets
         output=tr[hparams.layer_module_tmp.format(loss_layer)].output[0]
         if output.shape[1]!=rewriting_targets.shape[1]:
