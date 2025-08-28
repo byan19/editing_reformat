@@ -337,7 +337,6 @@ def compute_z(
                 noise_scale =  0.001
                 noise_holder = []
                 flat_loss_lambda = 0.001
-                post_layer_norm_holder = []
                 hooks = []
                 
                 '''
@@ -448,6 +447,7 @@ def compute_z(
         if flatness_loss:
             for ele in hooks:
                 ele.remove()
+        pdb.set_trace()
         
         # Project within L2 ball
         max_norm = hparams.clamp_norm_factor * target_init.norm()
