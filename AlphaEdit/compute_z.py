@@ -336,7 +336,7 @@ def compute_z(
                 print('flatness loss')
                 noise_scale =  0.001
                 noise_holder = []
-                flat_loss_lambda = 0.001
+                flat_loss_lambda = 0.01
                 hooks = []
                 
                 '''
@@ -428,7 +428,7 @@ def compute_z(
             torch.norm(delta) / torch.norm(target_init) ** 2
         )
         # weight_decay = hparams.v_weight_decay * torch.norm(delta) ** 2
-        loss = nll_loss + kl_loss.to(nll_loss.device) + weight_decay.to(nll_loss.device) + flat_loss_lambda  *flat_loss.mean()
+        loss = nll_loss + kl_loss.to(nll_loss.device) + weight_decay.to(nll_loss.device) + flat_loss_lambda  * flat_loss.mean()
         print(
             f"loss {np.round(loss.item(), 3)} = {np.round(nll_loss.item(), 3)} + {np.round(kl_loss.item(), 3)} + {np.round(weight_decay.item(), 3)} + {np.round(flat_loss.mean().item(), 3)} "
             f"avg prob of [{request['target_new']['str']}] "
