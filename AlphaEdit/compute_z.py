@@ -316,6 +316,7 @@ def compute_z(
             #logits = model(**input_tok).logits
             
             output = model(**input_tok,output_hidden_states=True)
+            hidden_states = output.hidden_states
             logits = output.logits
 
             # Compute distribution for KL divergence
@@ -338,6 +339,7 @@ def compute_z(
                 print('flatness loss')
                 noise_scale =  0.001
                 noise_holder = []
+                flat_loss_lambda = 0.001
                 post_layer_norm_holder = []
                 hooks = []
                 
@@ -371,6 +373,8 @@ def compute_z(
                 noise_output = model(**input_tok, output_hidden_states=True)
                 noise_hidden_states = noise_output.hidden_states
         pdb.set_trace()
+        
+
         # Compute loss on rewriting targets
         output=tr[hparams.layer_module_tmp.format(loss_layer)].output[0]
         if output.shape[1]!=rewriting_targets.shape[1]:
@@ -384,7 +388,35 @@ def compute_z(
             torch.where(rewriting_targets != -100, rewriting_targets, 0).unsqueeze(2).to(log_probs.device),
         ).squeeze(2)
         mask = (rewriting_targets != -100).float()
-
+        
+        pdb.set_trace()
+        ## compute the flatness loss
+        flat_loss = 0.0
+        pred_loc  = mask.argmax(dim = 1)
+        for i in range(1, len(hidden_states) - 1):
+            '''
+            conver_loss += torch.nn.functional.mse_loss(
+                hidden_states[i][torch.arange(logits.size(0)), pred_loc]
+                , hidden_states[i + 1][torch.arange(logits.size(0)), pred_loc])
+            '''
+            grad_noise = noise_hidden_states[i + 1][torch.arange(logits.size(0)), pred_loc] - \
+                         noise_hidden_states[i][torch.arange(logits.size(0)), pred_loc]
+            
+            grad = hidden_states[i + 1][torch.arange(logits.size(0)), pred_loc] - hidden_states[i][
+                torch.arange(logits.size(0)), pred_loc]
+            # flat_loss += post_layer_norm_holder[i] @ (grad_noise - grad).t()/noise_scale
+            # flat_loss += torch.nn.functional.softplus(post_layer_norm_holder[i] @ (grad_noise - grad).t()/noise_scale)
+            
+            # worked version
+            # flat_loss += torch.nn.functional.softplus( -1 * noise_holder[i] @ (grad_noise - grad).t() / noise_scale)
+            
+            # precised version
+            flat_loss += torch.nn.functional.softplus(
+                -1 * noise_holder[i][torch.arange(logits.size(0)), pred_loc] @ (grad_noise - grad).t() / noise_scale)
+        
+        loss += flat_loss_lambda * flat_loss.mean()
+        pdb.set_trace()
+        
         # Aggregate total losses
         nll_loss_each = -(loss * mask.to(loss.device)).sum(1) / target_ids.size(0)
         nll_loss = nll_loss_each.mean()
