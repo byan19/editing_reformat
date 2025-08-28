@@ -221,10 +221,9 @@ def compute_z(
     print("Computing right vector (v)")
 
     # Tokenize target into list of int token IDs
-    target_ids = tok(request["target_new"]["str"], return_tensors="pt").to("cuda")[
-        "input_ids"
-    ][0]
+    target_ids = tok(request["target_new"]["str"], return_tensors="pt").to("cuda")[ "input_ids"][0]
 
+    
     if target_ids[0] == tok.bos_token_id or target_ids[0] == tok.unk_token_id:
         target_ids = target_ids[1:]
     # Compile list of rewriting and KL x/y pairs
@@ -233,6 +232,7 @@ def compute_z(
         for context_types in context_templates
         for context in context_types
     ], ["{} is a"]
+    
     all_prompts = rewriting_prompts + kl_prompts
 
     input_tok = tok(
@@ -453,6 +453,9 @@ def compute_z(
         if delta.norm() > max_norm:
             with torch.no_grad():
                 delta[...] = delta * max_norm / delta.norm()
+                
+        del hidden_states
+        del noise_hidden_states
 
     target = target_init + delta
     print(
