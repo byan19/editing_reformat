@@ -82,7 +82,6 @@ def apply_AlphaEdit_to_model(
                 print(f"Error reading cache file due to {e}. Recomputing...")
 
         # Compute k/v pair if not loaded from cache
-        pdb.set_trace()
         if not data_loaded:
             cur_z = compute_z(
                 model,
