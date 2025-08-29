@@ -793,7 +793,7 @@ def compute_z(
         f"Init norm {target_init.norm()} | Delta norm {delta.norm()} | Target norm {target.norm()}"
     )
     
-    
+    pdb.set_trace()
     compute_fisher_vector(model , tok, request , hparams , layer, context_templates)
     return target
 
