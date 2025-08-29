@@ -500,7 +500,6 @@ def compute_z(
                 fisher_vec = noise_output.hidden_states[-1]
                 '''
                 
-
         # Compute loss on rewriting targets
         output=tr[hparams.layer_module_tmp.format(loss_layer)].output[0]
         
