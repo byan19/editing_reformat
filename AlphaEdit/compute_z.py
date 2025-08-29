@@ -316,6 +316,13 @@ def compute_fisher_vector(
     pdb.set_trace()
     fisher_vec = torch.autograd.grad(nll_loss, fisher_vec, retain_graph=True)[0]
     
+    for name, param in model.named_parameters():
+        '''
+        if name =='lm_head.weight':
+            param.requires_grad = True
+        '''
+        param.requires_grad = False
+
     return fisher_vec
 
 
