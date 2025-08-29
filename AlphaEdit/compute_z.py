@@ -277,6 +277,7 @@ def compute_fisher_vector(
     
     output = model(**input_tok, output_hidden_states=True)
     fisher_vec = output.hidden_states[-1]
+    fisher_vec.requires_grad = True
     fisher_vec.retain_grad()
     logits = output.logits
     
@@ -616,7 +617,6 @@ def compute_z(
         f"Init norm {target_init.norm()} | Delta norm {delta.norm()} | Target norm {target.norm()}"
     )
     
-    pdb.set_trace()
     compute_fisher_vector(model , tok, request , hparams , layer, context_templates)
     return target
 
