@@ -296,10 +296,10 @@ def compute_fisher_vector(
         kl_distr_init = kl_log_probs.detach().clone()
         
         # Compute loss on rewriting targets
-    full_repr = output[:len(rewriting_prompts)]
+    #full_repr = output[:len(rewriting_prompts)]
     
-    log_probs = torch.log_softmax(ln_f(full_repr) @ lm_w.to(full_repr.device) + lm_b.to(full_repr.device), dim=2)
-    #log_probs = torch.log_softmax(logits, dim = 2)
+    #log_probs = torch.log_softmax(ln_f(full_repr) @ lm_w.to(full_repr.device) + lm_b.to(full_repr.device), dim=2)
+    log_probs = torch.log_softmax(logits[:len(rewriting_prompts)], dim = 2)
     loss = torch.gather(
         log_probs,
         2,
