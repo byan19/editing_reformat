@@ -20,9 +20,11 @@ for name, param in model.named_parameters():
 
 outputs = model(inputs['input_ids'].cuda(), inputs['attention_mask'].cuda() , output_hidden_states=True)
 
+hidden2 = outputs.hidden_states[-2]   # last layer hidden states
 hidden = outputs.hidden_states[-1]   # last layer hidden states
 
 # if you want .grad populated, you must call:
+hidden2.retain_grad()
 hidden.retain_grad()
 
 # make a dummy scalar loss depending on hidden states
