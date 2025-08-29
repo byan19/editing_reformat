@@ -272,11 +272,14 @@ def compute_fisher_vector(
     
     # Execute optimization
     for name, param in model.named_parameters():
+        '''
         if name =='lm_head.weight':
             param.requires_grad = True
+        '''
+        param.requires_grad = True
     
     output = model(**input_tok, output_hidden_states=True)
-    fisher_vec = output.hidden_states[-1]
+    fisher_vec = output.hidden_states[-2]
     fisher_vec.requires_grad = True
     fisher_vec.retain_grad()
     logits = output.logits
