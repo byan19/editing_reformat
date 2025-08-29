@@ -381,7 +381,6 @@ def compute_z(
                 fisher_vec = noise_output.hidden_states[-1]
                 
 
-        pdb.set_trace()
         # Compute loss on rewriting targets
         output=tr[hparams.layer_module_tmp.format(loss_layer)].output[0]
         if output.shape[1]!=rewriting_targets.shape[1]: output=torch.transpose(output, 0, 1)
