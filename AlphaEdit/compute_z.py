@@ -296,10 +296,10 @@ def compute_fisher_vector(
         kl_distr_init = kl_log_probs.detach().clone()
         
         # Compute loss on rewriting targets
-    #full_repr = output[:len(rewriting_prompts)]
+    full_repr = output[:len(rewriting_prompts)]
     
-    #log_probs = torch.log_softmax(ln_f(full_repr) @ lm_w.to(full_repr.device) + lm_b.to(full_repr.device), dim=2)
-    log_probs = torch.log_softmax(logits, dim = 2)
+    log_probs = torch.log_softmax(ln_f(full_repr) @ lm_w.to(full_repr.device) + lm_b.to(full_repr.device), dim=2)
+    #log_probs = torch.log_softmax(logits, dim = 2)
     loss = torch.gather(
         log_probs,
         2,
@@ -313,9 +313,10 @@ def compute_fisher_vector(
     kl_loss = hparams.kl_factor * torch.nn.functional.kl_div(
         kl_distr_init, kl_log_probs, log_target=True, reduction="batchmean"
     )
-    pdb.set_trace()
-    fisher_vec = torch.autograd.grad(nll_loss, fisher_vec, retain_graph=True)[0]
     
+    fisher_vec = torch.autograd.grad(nll_loss, fisher_vec, retain_graph=True)[0]
+    print('fisher matrix computation done')
+    pdb.set_trace()
     for name, param in model.named_parameters():
         '''
         if name =='lm_head.weight':
