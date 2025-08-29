@@ -441,7 +441,17 @@ def compute_z(
             torch.norm(delta) / torch.norm(target_init) ** 2
         )
         
+        
+        grads = {}
+        def save_grad(name):
+            def hook(grad):
+                grads[name] = grad
+            
+            return hook
         pdb.set_trace()
+        
+        fisher_vec.register_hook(save_grad("last_hidden"))
+        
         torch.autograd.grad(nll_loss, fisher_vec, retain_graph = True)
         # weight_decay = hparams.v_weight_decay * torch.norm(delta) ** 2
         loss = nll_loss + kl_loss.to(nll_loss.device) + weight_decay.to(nll_loss.device) + flat_loss_lambda  * flat_loss.mean()
