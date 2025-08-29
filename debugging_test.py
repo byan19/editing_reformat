@@ -19,12 +19,15 @@ for name, param in model.named_parameters():
 	param.requires_grad = False
 '''
 
+'''
 for name, param in model.named_parameters():
 	if '31' in name:
 		param.requires_grad = False
+'''
 
 
-outputs = model(inputs['input_ids'].cuda(), inputs['attention_mask'].cuda() , output_hidden_states=True)
+#outputs = model(inputs['input_ids'].cuda(), inputs['attention_mask'].cuda() , output_hidden_states=True)
+outputs = model(inputs['input_ids'].cuda(), inputs['attention_mask'].cuda(), labels=inputs["input_ids"].cuda(), output_hidden_states=True)
 
 hidden2 = outputs.hidden_states[-2]   # last layer hidden states
 hidden = outputs.hidden_states[-1]   # last layer hidden states
@@ -34,7 +37,7 @@ hidden2.retain_grad()
 hidden.retain_grad()
 
 # make a dummy scalar loss depending on hidden states
-loss = hidden.norm()
+loss = outputs.loss
 pdb.set_trace()
 
 tmp =  torch.autograd.grad(loss, hidden, retain_graph =True)
