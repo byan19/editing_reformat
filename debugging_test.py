@@ -8,9 +8,13 @@ tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B-Instruct")
 
 model.to('cuda')
 inputs = tokenizer("Hello world", return_tensors="pt")
-pdb.set_trace()
 # forward with hidden states
-outputs = model(**inputs, output_hidden_states=True)
+#outputs = model(**inputs, output_hidden_states=True)
+for name, param in model.named_parameters():
+	param.requires_grad = False
+	
+outputs = model(inputs['input_ids'].cuda(), inputs['attention_mask'].cuda() , output_hidden_states=True)
+
 hidden = outputs.hidden_states[-1]   # last layer hidden states
 
 # if you want .grad populated, you must call:
