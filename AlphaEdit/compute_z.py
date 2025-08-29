@@ -283,7 +283,10 @@ def compute_fisher_vector(
     fisher_vec.requires_grad = True
     fisher_vec.retain_grad()
     logits = output.logits
-    
+    pdb.set_trace()
+    torch.autograd.grad(logits.sum(), fisher_vec, retain_graph = True)
+
+    pdb.set_trace()
     # Compute distribution for KL divergence
     kl_logits = torch.stack(
         [logits[i - len(kl_prompts), idx, :] for i, idx in enumerate(lookup_idxs[-len(kl_prompts):])],
@@ -315,12 +318,7 @@ def compute_fisher_vector(
     )
     
     pdb.set_trace()
-    torch.autograd.grad(nll_loss, fisher_vec, retain_graph=True)
-    # weight_decay = hparams.v_weight_decay * torch.norm(delta) ** 2
-    loss = nll_loss
-    
-    
-    fisher_vec = None
+    fisher_vec = torch.autograd.grad(nll_loss, fisher_vec, retain_graph=True)[0]
     
     return fisher_vec
 
