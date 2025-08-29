@@ -440,6 +440,9 @@ def compute_z(
             torch.norm(delta) / torch.norm(target_init) ** 2
         )
         
+        for name, param in model.named_parameters() :
+            if name == 'lm_head.weight':
+                param.requires_grad = True
         
         '''
         grads = {}
