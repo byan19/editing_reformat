@@ -437,6 +437,7 @@ def compute_z(
             torch.norm(delta) / torch.norm(target_init) ** 2
         )
         
+        pdb.set_trace()
         # weight_decay = hparams.v_weight_decay * torch.norm(delta) ** 2
         loss = nll_loss + kl_loss.to(nll_loss.device) + weight_decay.to(nll_loss.device) + flat_loss_lambda  * flat_loss.mean()
         
