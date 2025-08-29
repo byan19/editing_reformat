@@ -3,10 +3,10 @@ from transformers import AutoModel, AutoTokenizer
 import pdb
 
 model = AutoModel.from_pretrained("meta-llama/Meta-Llama-3-8B-Instruct")
-tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B-Instruct")
+tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B-Instruct").to('cuda')
 
 inputs = tokenizer("Hello world", return_tensors="pt")
-
+pdb.set_trace()
 # forward with hidden states
 outputs = model(**inputs, output_hidden_states=True)
 hidden = outputs.hidden_states[-1]   # last layer hidden states
