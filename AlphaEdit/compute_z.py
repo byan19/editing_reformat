@@ -381,7 +381,7 @@ def compute_z(
                 fisher_vec = noise_output.hidden_states[-1]
                 
 
-            
+        pdb.set_trace()
         # Compute loss on rewriting targets
         output=tr[hparams.layer_module_tmp.format(loss_layer)].output[0]
         if output.shape[1]!=rewriting_targets.shape[1]: output=torch.transpose(output, 0, 1)
@@ -441,6 +441,7 @@ def compute_z(
         )
         
         
+        '''
         grads = {}
         def save_grad(name):
             def hook(grad):
@@ -452,6 +453,7 @@ def compute_z(
         fisher_vec = fisher_vec[:len(rewriting_prompts)][torch.arange(logits.size(0)), pred_loc]
         
         fisher_vec.register_hook(save_grad("last_hidden"))
+        '''
         
         torch.autograd.grad(nll_loss, fisher_vec, retain_graph = True)
         # weight_decay = hparams.v_weight_decay * torch.norm(delta) ** 2
