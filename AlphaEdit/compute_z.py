@@ -280,7 +280,6 @@ def compute_fisher_vector(
     
     output = model(**input_tok, output_hidden_states=True)
     fisher_vec = output.hidden_states[-2]
-    fisher_vec.requires_grad = True
     fisher_vec.retain_grad()
     logits = output.logits
     pdb.set_trace()
