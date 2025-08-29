@@ -319,7 +319,7 @@ def compute_z(
             #hidden_states = output.hidden_states[layer-1: layer+1]
             hidden_states = output.hidden_states[layer+1: layer+3]
             
-            #fisher_vec = output.hidden_states[-1]
+            fisher_vec = output.hidden_states[-1]
             logits = output.logits
 
             # Compute distribution for KL divergence
@@ -375,10 +375,12 @@ def compute_z(
                 '''
                 hooks.append(model.model.layers[layer].register_forward_pre_hook(hook_fn_local))
                 
-                #noise_hidden_states = model(**input_tok, output_hidden_states=True).hidden_states[layer+1: layer+3]
+                noise_hidden_states = model(**input_tok, output_hidden_states=True).hidden_states[layer+1: layer+3]
+                '''
                 noise_output = model(**input_tok, output_hidden_states=True)
                 noise_hidden_states = noise_output.hidden_states[layer+1: layer+3]
                 fisher_vec = noise_output.hidden_states[-1]
+                '''
                 
 
         # Compute loss on rewriting targets
