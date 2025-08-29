@@ -2,8 +2,8 @@ import torch
 from transformers import AutoModel, AutoTokenizer
 import pdb
 
-model_name = 'meta-llama/Meta-Llama-3-8B-Instruct'
 model_name = 'meta-llama/Llama-2-7b-hf'
+model_name = 'meta-llama/Meta-Llama-3-8B-Instruct'
 
 model = AutoModel.from_pretrained(model_name)
 tokenizer = AutoTokenizer.from_pretrained(model_name)
