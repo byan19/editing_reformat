@@ -318,7 +318,7 @@ def compute_z(
             output = model(**input_tok,output_hidden_states=True)
             #hidden_states = output.hidden_states[layer-1: layer+1]
             hidden_states = output.hidden_states[layer+1: layer+3]
-            fisher = output.hidden_states[-1]
+            fisher_vec = output.hidden_states[-1]
             logits = output.logits
 
             # Compute distribution for KL divergence
@@ -438,6 +438,8 @@ def compute_z(
         )
         
         pdb.set_trace()
+        fisher_vec.retain_grad()
+        torch.autograd.grad(nll_loss, fisher_vec, retain_graph = True)
         # weight_decay = hparams.v_weight_decay * torch.norm(delta) ** 2
         loss = nll_loss + kl_loss.to(nll_loss.device) + weight_decay.to(nll_loss.device) + flat_loss_lambda  * flat_loss.mean()
         
