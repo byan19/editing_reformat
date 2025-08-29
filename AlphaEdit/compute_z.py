@@ -282,8 +282,8 @@ def compute_fisher_vector(
     fisher_vec = output.hidden_states[-1]
     fisher_vec.retain_grad()
     logits = output.logits
-    #torch.autograd.grad(logits.sum(), fisher_vec, retain_graph = True)
-
+    # torch.autograd.grad(logits.sum(), fisher_vec, retain_graph = True)
+    
     # Compute distribution for KL divergence
     kl_logits = torch.stack(
         [logits[i - len(kl_prompts), idx, :] for i, idx in enumerate(lookup_idxs[-len(kl_prompts):])],
@@ -296,10 +296,10 @@ def compute_fisher_vector(
         kl_distr_init = kl_log_probs.detach().clone()
         
         # Compute loss on rewriting targets
-    #full_repr = output[:len(rewriting_prompts)]
+    # full_repr = output[:len(rewriting_prompts)]
     
-    #log_probs = torch.log_softmax(ln_f(full_repr) @ lm_w.to(full_repr.device) + lm_b.to(full_repr.device), dim=2)
-    log_probs = torch.log_softmax(logits[:len(rewriting_prompts)], dim = 2)
+    # log_probs = torch.log_softmax(ln_f(full_repr) @ lm_w.to(full_repr.device) + lm_b.to(full_repr.device), dim=2)
+    log_probs = torch.log_softmax(logits[:len(rewriting_prompts)], dim=2)
     loss = torch.gather(
         log_probs,
         2,
@@ -316,14 +316,13 @@ def compute_fisher_vector(
     
     fisher_vec = torch.autograd.grad(nll_loss, fisher_vec, retain_graph=True)[0]
     print('fisher matrix computation done')
-    pdb.set_trace()
     for name, param in model.named_parameters():
         '''
         if name =='lm_head.weight':
             param.requires_grad = True
         '''
         param.requires_grad = False
-
+    
     return fisher_vec
 
 
