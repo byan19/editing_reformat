@@ -319,7 +319,6 @@ def compute_z(
             #hidden_states = output.hidden_states[layer-1: layer+1]
             hidden_states = output.hidden_states[layer+1: layer+3]
             fisher_vec = output.hidden_states[-1]
-            fisher_vec.retain_grad()
             logits = output.logits
 
             # Compute distribution for KL divergence
@@ -406,6 +405,10 @@ def compute_z(
         hidden_states = [tmp[:len(rewriting_prompts)] for tmp in hidden_states ]
 
         logits = logits[: len(rewriting_prompts)]
+        
+        fisher_vec = fisher_vec[:len(rewriting_prompts)][torch.arange(logits.size(0)), pred_loc]
+        fisher_vec.retain_grad()
+        
         
         grad_noise = noise_hidden_states[1][torch.arange(logits.size(0)), pred_loc] - \
                      noise_hidden_states[0][torch.arange(logits.size(0)), pred_loc]
