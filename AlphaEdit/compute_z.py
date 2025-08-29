@@ -382,8 +382,6 @@ def compute_z(
                 
 
             
-
-
         # Compute loss on rewriting targets
         output=tr[hparams.layer_module_tmp.format(loss_layer)].output[0]
         if output.shape[1]!=rewriting_targets.shape[1]: output=torch.transpose(output, 0, 1)

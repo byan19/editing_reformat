@@ -1,12 +1,13 @@
 import torch
 from transformers import AutoModel, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer
 import pdb
 
 model_name = 'meta-llama/Llama-2-7b-hf'
 model_name = 'meta-llama/Meta-Llama-3-8B-Instruct'
 
-model = AutoModel.from_pretrained(model_name)
 tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForCausalLM.from_pretrained(model_name)
 
 
 model.to('cuda')
