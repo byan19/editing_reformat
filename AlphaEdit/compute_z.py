@@ -305,7 +305,7 @@ def compute_fisher_vector(
         kl_distr_init, kl_log_probs, log_target=True, reduction="batchmean"
     )
     
-    
+    pdb.set_trace()
     torch.autograd.grad(nll_loss, fisher_vec, retain_graph=True)
     # weight_decay = hparams.v_weight_decay * torch.norm(delta) ** 2
     loss = nll_loss
