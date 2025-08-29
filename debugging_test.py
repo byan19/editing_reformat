@@ -27,6 +27,10 @@ hidden.retain_grad()
 
 # make a dummy scalar loss depending on hidden states
 loss = hidden.norm()
-loss.backward()
+pdb.set_trace()
+
+tmp =  torch.autograd.grad(loss, hidden, retain_graph =True)
+
+#loss.backward()
 
 print(hidden.grad.shape)
