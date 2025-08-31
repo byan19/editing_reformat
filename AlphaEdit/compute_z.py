@@ -372,6 +372,7 @@ def compute_z(
         padding=True,
     ).to("cuda")
 
+    pdb.set_trace()
     # Compute rewriting targets
     rewriting_targets = torch.tensor(-100, device="cuda").repeat(
         len(rewriting_prompts), *input_tok["input_ids"].shape[1:]
@@ -622,7 +623,10 @@ def compute_z(
     )
     
     fisher_vec = compute_fisher_vector(model , tok, request , hparams , layer, context_templates)
-    pdb.set_trace()
+    
+    fisher_vec = fisher_vec.reshape(-1, fisher_vec.shape[2])
+    fisher_matrix = fisher_vec.t().matmul(fisher_vec)
+    
     return target
 
 
