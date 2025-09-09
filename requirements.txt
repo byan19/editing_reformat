@@ -14,5 +14,4 @@ nltk==3.9.1
 # for installing spacy
 # pip install -U pip setuptools wheel
 # pip install spacy
-# only for test
 

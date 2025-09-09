@@ -1,0 +1,39 @@
+#!/bin/bash
+MultiRun (){
+sessionname=$1
+File=$2
+Param=$3
+Tunning=$4
+echo "${sessionname}"
+
+screen -dmS "$sessionname"
+
+screen -S $sessionname -X stuff "cd /root/autodl-tmp/project/hessian_editing^M"
+#screen -S $sessionname -X stuff "source activate editing^M"
+sleep 1.0s
+echo ${File}
+screen -S $sessionname -X stuff "bash ${File} ${Param} ${sessionname} ${Tunning}^M"
+}
+
+Tunning=1
+
+Target_Para_List=(o_proj q_proj k_proj v_proj)
+Target_Para_List=(o_proj)
+
+Tunning_list=(0 )
+for ((idx=0; idx<${#Target_Para_List[@]}; idx++)); do
+Param=${Target_Para_List[$idx]}
+Tunning=${Tunning_list[$idx]}
+
+
+sessionname=editing_test2
+sessionname=editing_alphaedit
+
+
+File=bashscript/subrun/nse.sh
+File=bashscript/subrun/alphaedit.sh
+
+CHECK=${sessionname}
+
+MultiRun ${sessionname} ${File} ${Param} ${Tunning}
+done
