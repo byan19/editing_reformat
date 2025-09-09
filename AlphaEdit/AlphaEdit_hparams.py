@@ -21,6 +21,11 @@ class AlphaEditHyperParams(HyperParams):
     kl_factor: float
     mom2_adjustment: bool
     mom2_update_weight: float
+    
+    # added by me
+    flat_loss_lambda: float
+    noise_scale: float
+    flatness_loss: bool
 
     # Module templates
     rewrite_module_tmp: str

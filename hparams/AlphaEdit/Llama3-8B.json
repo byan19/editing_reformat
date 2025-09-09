@@ -9,6 +9,11 @@
     "v_loss_layer": 31,
     "v_weight_decay": 0.5,
     "kl_factor": 0.0625,
+
+    "flat_loss_lambda": 20.0,
+    "flatness_loss": true,
+    "noise_scale": 0.001,
+
     "mom2_adjustment": true,
     "mom2_update_weight": 15000,
     "rewrite_module_tmp": "model.layers.{}.mlp.down_proj",

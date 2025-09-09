@@ -8,5 +8,9 @@ CUDA_VISIBLE_DEVICES=0 python -m experiments.evaluate \
 --num_edits=100 \
 --downstream_eval_steps=5 \
 --debugging_mood=1 \
+
+
+# the default choise of the models
 #--model_name=meta-llama/Llama-2-7b-hf \
 #--model_name=meta-llama/Meta-Llama-3-8B-Instruct \
+#--num_edits=100 \

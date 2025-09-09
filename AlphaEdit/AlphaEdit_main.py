@@ -57,7 +57,8 @@ def apply_AlphaEdit_to_model(
     context_templates = get_context_templates(model, tok)
     z_layer = hparams.layers[-1]
     z_list = []
-
+    fisher_matrix = 0.0
+    fisher_count = 0
     for request in requests:
         # Retrieve k/v pair if already stored in cache
         cache_fname = (
@@ -83,7 +84,7 @@ def apply_AlphaEdit_to_model(
 
         # Compute k/v pair if not loaded from cache
         if not data_loaded:
-            cur_z = compute_z(
+            cur_z, fisher_tmp = compute_z( # moodified for fisher
                 model,
                 tok,
                 request,
@@ -93,6 +94,8 @@ def apply_AlphaEdit_to_model(
             )
 
             z_list.append(cur_z)
+            fisher_matrix += fisher_tmp # moodified for fisher
+            fisher_count +=1 # moodified for fisher
 
             if cache_fname is not None:
                 cache_fname.parent.mkdir(exist_ok=True, parents=True)
@@ -104,6 +107,8 @@ def apply_AlphaEdit_to_model(
                 )
                 print(f"Cached k/v pair at {cache_fname}")
     zs = torch.stack(z_list, dim=1)
+    
+    fisher_matrix /= fisher_count # moodified for fisher
 
     for i, layer in enumerate(hparams.layers):
         print(f"\n\nLAYER {layer}\n")
@@ -130,11 +135,16 @@ def apply_AlphaEdit_to_model(
         
         resid = targets / (len(hparams.layers) - i)  # Distribute residual across layers
         # AX= B torch.linalg.solve(A,B)
-        pdb.set_trace()
         upd_matrix = torch.linalg.solve(
                 P[i,:,:].cuda() @ (layer_ks @ layer_ks.T + cache_c[i,:,:].cuda()) + hparams.L2*torch.eye(layer_ks.shape[0], dtype=torch.float,device="cuda"), # Matrix A
             P[i,:,:].cuda() @ layer_ks @ resid.T # matrix B
         )
+        
+        pdb.set_trace()
+        tmp = upd_matrix @ fisher_matrix
+        tmp = upd_matrix @ (fisher_matrix/ fisher_matrix.max())
+        tmp = upd_matrix @ (fisher_matrix/ fisher_matrix.max() + torch.eye(fisher_matrix.shape[0], dtype=torch.float,device="cuda"))
+
         # Adjust update matrix shape
         weight_name = f"{hparams.rewrite_module_tmp.format(layer)}.weight"
         upd_matrix = upd_matrix_match_shape(upd_matrix, weights[weight_name].shape)
