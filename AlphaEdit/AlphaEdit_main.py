@@ -140,10 +140,13 @@ def apply_AlphaEdit_to_model(
             P[i,:,:].cuda() @ layer_ks @ resid.T # matrix B
         )
         
+        print(upd_matrix)
+        '''
         pdb.set_trace()
         tmp = upd_matrix @ fisher_matrix
         tmp = upd_matrix @ (fisher_matrix/ fisher_matrix.max())
         tmp = upd_matrix @ (fisher_matrix/ fisher_matrix.max() + torch.eye(fisher_matrix.shape[0], dtype=torch.float,device="cuda"))
+        '''
 
         # Adjust update matrix shape
         weight_name = f"{hparams.rewrite_module_tmp.format(layer)}.weight"
