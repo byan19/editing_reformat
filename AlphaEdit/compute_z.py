@@ -599,12 +599,15 @@ def compute_z(
     )
     
     
+    '''
     fisher_vec = compute_fisher_vector(model , tok, request , hparams , layer, context_templates)
     
     with torch.no_grad():
         fisher_vec = fisher_vec.reshape(-1, fisher_vec.shape[2])
         fisher_matrix = fisher_vec.t().matmul(fisher_vec)
-    torch.cuda.empty_cache()
+    #torch.cuda.empty_cache()
+    '''
+    fisher_matrix = None
     return target, fisher_matrix
 
 def get_module_input_output_at_words(
