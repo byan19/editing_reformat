@@ -521,7 +521,6 @@ def compute_z(
         mask = (rewriting_targets != -100).float()
         
         ## compute the flatness loss
-        flatness_loss = True
         if flatness_loss:
             pred_loc  = mask.argmax(dim = 1)
             
