@@ -5,14 +5,14 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from .compute_z import get_module_input_output_at_words
-from .AlphaEdit_Hessian_hparams import AlphaEditHyperParams
+from .AlphaEdit_Hessian_hparams import AlphaEdit_Hessian_HyperParams
 
 
 def compute_ks(
     model: AutoModelForCausalLM,
     tok: AutoTokenizer,
     requests: Dict,
-    hparams: AlphaEditHyperParams,
+    hparams: AlphaEdit_Hessian_HyperParams,
     layer: int,
     context_templates: List[str],
 ):

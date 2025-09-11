@@ -7,7 +7,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from rome import repr_tools
 from util import nethook
 
-from .AlphaEdit_Hessian_hparams import AlphaEditHyperParams
+from .AlphaEdit_Hessian_hparams import AlphaEdit_Hessian_HyperParams
 import pdb
 
 
@@ -15,7 +15,7 @@ def compute_z_original(
         model: AutoModelForCausalLM,
         tok: AutoTokenizer,
         request: Dict,
-        hparams: AlphaEditHyperParams,
+        hparams: AlphaEdit_Hessian_HyperParams,
         layer: int,
         context_templates: List[str],
 ) -> Tuple[torch.Tensor, torch.Tensor]:
@@ -202,7 +202,7 @@ def compute_z(
         model: AutoModelForCausalLM,
         tok: AutoTokenizer,
         request: Dict,
-        hparams: AlphaEditHyperParams,
+        hparams: AlphaEdit_Hessian_HyperParams,
         layer: int,
         context_templates: List[str],
 ) -> Tuple[torch.Tensor, torch.Tensor]:
@@ -388,7 +388,7 @@ def compute_fisher_vector(
         model: AutoModelForCausalLM,
         tok: AutoTokenizer,
         request: Dict,
-        hparams: AlphaEditHyperParams,
+        hparams: AlphaEdit_Hessian_HyperParams,
         layer: int,
         context_templates: List[str],
 ) -> Tuple[torch.Tensor, torch.Tensor]:
@@ -517,7 +517,7 @@ def compute_z_debugging(
     model: AutoModelForCausalLM,
     tok: AutoTokenizer,
     request: Dict,
-    hparams: AlphaEditHyperParams,
+    hparams: AlphaEdit_Hessian_HyperParams,
     layer: int,
     context_templates: List[str],
 ) -> Tuple[torch.Tensor, torch.Tensor]:
