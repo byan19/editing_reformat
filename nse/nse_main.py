@@ -212,6 +212,7 @@ def apply_nse_to_model(
                 layer_ks[selected_rows, :],
             )
             
+            pdb.set_trace()
             resid = targets/(len(hparams.layers) - i)
             partial_upd_matrix = resid @ adj_k.T
             # Adjust update matrix shape
