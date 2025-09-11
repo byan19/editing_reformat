@@ -27,8 +27,14 @@ from memit.compute_z import get_module_input_output_at_words, compute_z
 from memit.memit_main import apply_memit_to_model, get_context_templates
 from memit.memit_seq_main import apply_memit_seq_to_model
 from memit.memit_rect_main import apply_memit_rect_to_model
+
 from AlphaEdit import AlphaEditHyperParams
 from AlphaEdit.AlphaEdit_main import apply_AlphaEdit_to_model, get_cov
+
+from AlphaEdit_Hessian import AlphaEdit_Hessian_HyperParams
+from AlphaEdit_Hessian.AlphaEdit_Hessian_main import apply_AlphaEdit_Hessian_to_model, get_cov
+
+
 from rome import ROMEHyperParams, apply_rome_to_model
 from util import nethook
 from util.globals import *
@@ -39,6 +45,7 @@ import pdb
 
 ALG_DICT = {
     "AlphaEdit": (AlphaEditHyperParams, apply_AlphaEdit_to_model),
+    "AlphaEdit_Hessian": (AlphaEdit_Hessian_HyperParams, apply_AlphaEdit_Hessian_to_model),
     "MEMIT_seq": (MEMITHyperParams, apply_memit_seq_to_model),
     "MEMIT_prune": (MEMITHyperParams, apply_memit_to_model),
     "MEMIT_rect": (MEMITHyperParams, apply_memit_rect_to_model),
@@ -139,7 +146,7 @@ def main(
     # Get cache templates
     cache_template = None
     if use_cache:
-        if any(alg in alg_name for alg in ["MEMIT","AlphaEdit", "MEMIT_seq", "MEMIT_prune", "MEMIT_rect"]):
+        if any(alg in alg_name for alg in ["MEMIT","AlphaEdit", "AlphaEdit_Hessian" "MEMIT_seq", "MEMIT_prune", "MEMIT_rect"]):
             cache_template = (
                 KV_DIR
                 / f"{model_name.replace('/', '_')}_MEMIT"
@@ -195,20 +202,20 @@ def main(
                         },
                     )
                     print(f"Cached k/v pair at {cache_fname}")
-    if any(alg in alg_name for alg in ["AlphaEdit", "MEMIT_seq", "MEMIT_prune", "NSE"]):
+    if any(alg in alg_name for alg in ["AlphaEdit", "AlphaEdit_Hessian" "MEMIT_seq", "MEMIT_prune", "NSE"]):
         # Iterate through dataset
         W_out = nethook.get_parameter(model, f"{hparams.rewrite_module_tmp.format(hparams.layers[-1])}.weight")
         if hparams.model_name == "gpt2-xl":
             cache_c = torch.zeros((len(hparams.layers), W_out.shape[0], W_out.shape[0]), device="cpu")
-            if alg_name == "AlphaEdit":
+            if alg_name == "AlphaEdit" or alg_name == "AlphaEdit_Hessian":
                 P = torch.zeros((len(hparams.layers), W_out.shape[0], W_out.shape[0]), device="cpu")
         elif hparams.model_name in ["EleutherAI_gpt-j-6B","Llama3-8B","phi-1.5"]:
             cache_c = torch.zeros((len(hparams.layers), W_out.shape[1], W_out.shape[1]), device="cpu")
-            if alg_name == "AlphaEdit":
+            if alg_name == "AlphaEdit" or alg_name == "AlphaEdit_Hessian":
                 P = torch.zeros((len(hparams.layers), W_out.shape[1], W_out.shape[1]), device="cpu")
         del W_out
         
-    if alg_name == "AlphaEdit":
+    if alg_name == "AlphaEdit" or alg_name == "AlphaEdit_Hessian":
         if os.path.exists(f'null_space_project.pt'):
             P = torch.load(f'null_space_project.pt')
         else:
@@ -253,8 +260,8 @@ def main(
             if conserve_memory
             else dict()
         )
-        etc_args = dict(cache_template=cache_template) if any(alg in alg_name for alg in ["ROME", "MEMIT","AlphaEdit", "MEMIT_seq", "MEMIT_prune", "NSE"]) else dict()
-        seq_args = dict(cache_c=cache_c) if any(alg in alg_name for alg in ["AlphaEdit", "MEMIT_seq", "NSE"]) else dict()
+        etc_args = dict(cache_template=cache_template) if any(alg in alg_name for alg in ["ROME", "MEMIT","AlphaEdit", "AlphaEdit_Hessian", "MEMIT_seq", "MEMIT_prune", "NSE"]) else dict()
+        seq_args = dict(cache_c=cache_c) if any(alg in alg_name for alg in ["AlphaEdit", "AlphaEdit_Hessian", "MEMIT_seq", "NSE"]) else dict()
         nc_args = dict(P = P) if any(alg in alg_name for alg in ["AlphaEdit"]) else dict()
         
         #do initial GLUE EVAL WITH ORIGINAL MODEL
@@ -276,7 +283,7 @@ def main(
         start = time()
         tmp = [ {"case_id": record["case_id"], **rewrite_dict} for record in record_chunks for rewrite_dict in ( record["requested_rewrite"] if isinstance(record["requested_rewrite"], list) else [record["requested_rewrite"]] ) ]
         # runing on the AlphaEdit, Menit and NSE
-        if any(alg in alg_name for alg in ["AlphaEdit", "MEMIT_seq", "NSE"]):
+        if any(alg in alg_name for alg in ["AlphaEdit", "AlphaEdit_Hessian", "MEMIT_seq", "NSE"]):
             edited_model, cache_c = apply_algo(
                 model,
                 tok,

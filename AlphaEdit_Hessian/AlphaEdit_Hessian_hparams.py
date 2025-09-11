@@ -5,7 +5,7 @@ from util.hparams import HyperParams
 
 
 @dataclass
-class AlphaEditHyperParams(HyperParams):
+class AlphaEdit_Hessian_HyperParams(HyperParams):
     # Method
     model_name: str
     layers: List[int]

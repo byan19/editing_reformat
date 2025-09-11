@@ -7,7 +7,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from rome import repr_tools
 from util import nethook
 
-from .AlphaEdit_hparams import AlphaEditHyperParams
+from .AlphaEdit_Hessian_hparams import AlphaEditHyperParams
 import pdb
 
 

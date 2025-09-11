@@ -14,7 +14,7 @@ from util.globals import *
 
 from .compute_ks import compute_ks
 from .compute_z import compute_z, get_module_input_output_at_words, find_fact_lookup_idx
-from .AlphaEdit_hparams import AlphaEditHyperParams
+from .AlphaEdit_Hessian_hparams import AlphaEditHyperParams
 # Cache variable(s)
 CONTEXT_TEMPLATES_CACHE = None
 COV_CACHE = {}
