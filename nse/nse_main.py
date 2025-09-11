@@ -91,7 +91,6 @@ def apply_nse_to_model(
     #     print(f"Cluster {cluster_label}: {len(members)} elements")
     
 
-    pdb.set_trace()
     z_list = []
     for request in requests:
         # Retrieve k/v pair if already stored in cache
@@ -218,6 +217,7 @@ def apply_nse_to_model(
             # Adjust update matrix shape
             upd_matrix[: , selected_rows] += partial_upd_matrix
             upd_matrix = upd_matrix_match_shape(upd_matrix, weights[weight_name].shape)
+            print(upd_matrix)
             print("orig norm", torch.linalg.norm(weights[weight_name]))
             print("upd norm", torch.linalg.norm(upd_matrix))
             # Update model weights and record desired changes in `delta` variable
