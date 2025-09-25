@@ -1,4 +1,5 @@
 import os
+import pdb
 
 import json
 import shutil
@@ -124,6 +125,8 @@ def main(
 		model, tok = model_name
 		model_name = model.config._name_or_path
 	
+	
+	
 	# Load data
 	print("Loading dataset, attribute snippets, tf-idf data")
 	snips = AttributeSnippets(DATA_DIR) if not skip_generation_tests else None
@@ -209,6 +212,7 @@ def main(
 		for i, layer in enumerate(hparams.layers):
 			P[i, :, :] = get_project(model, tok, layer, hparams)
 		torch.save(P, "null_space_project.pt")
+		pdb.set_trace()
 	# hs = get_module_input_output_at_words(
 	#         model,
 	#         tok,

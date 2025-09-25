@@ -216,8 +216,8 @@ def main(
         del W_out
         
     if alg_name == "AlphaEdit" or alg_name == "AlphaEdit_Hessian":
-        if os.path.exists(f'null_space_project.pt'):
-            P = torch.load(f'null_space_project.pt')
+        if os.path.exists(f'null_space_project.pt'): # create by myself
+            P = torch.load(f'null_space_project.pt') # create by myself
         else:
             for i, layer in enumerate(hparams.layers):
                 P[i,:,:] = get_project(model,tok,layer,hparams)
