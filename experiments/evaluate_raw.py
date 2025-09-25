@@ -554,6 +554,13 @@ if __name__ == "__main__":
 		default=0,
 		help="If we want to do sequential editing or not",
 	)
+	
+	parser.add_argument(
+		"--debugging_mood",
+		type=int,
+		default=0,
+		help="Debugging",
+	)
 	parser.set_defaults(skip_generation_tests=False, conserve_memory=False)
 	args = parser.parse_args()
 	
