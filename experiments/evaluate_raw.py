@@ -209,9 +209,21 @@ def main(
 				P = torch.zeros((len(hparams.layers), W_out.shape[1], W_out.shape[1]), device="cpu")
 		del W_out
 	if alg_name == "AlphaEdit":
+		
+		'''
+		original implementation
 		for i, layer in enumerate(hparams.layers):
 			P[i, :, :] = get_project(model, tok, layer, hparams)
 		torch.save(P, "null_space_project.pt")
+		'''
+		
+		if os.path.exists(f'null_space_project.pt'):  # create by myself
+			P = torch.load(f'null_space_project.pt')  # create by myself
+		else:
+			for i, layer in enumerate(hparams.layers):
+				P[i, :, :] = get_project(model, tok, layer, hparams)
+			torch.save(P, "null_space_project.pt")
+		
 		pdb.set_trace()
 	# hs = get_module_input_output_at_words(
 	#         model,
