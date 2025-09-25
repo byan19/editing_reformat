@@ -178,6 +178,7 @@ def layer_stats(
         progress = lambda x: x
 
     stat = CombinedStat(**{k: STAT_TYPES[k]() for k in to_collect})
+    
     loader = tally(
         stat,
         ds,
@@ -189,7 +190,9 @@ def layer_stats(
         random_sample=1,
         num_workers=2,
     )
+    
     batch_count = -(-(sample_size or len(ds)) // batch_size)
+    
     with torch.no_grad():
         for batch_group in progress(loader, total=batch_count):
             for batch in batch_group:

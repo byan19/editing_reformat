@@ -168,7 +168,6 @@ def apply_nse_to_model(
             print(f"Writing {layer_ks.size(1)} key/value pair(s) into layer {layer}")
             # Compute residual error
             cur_zs = get_module_input_output_at_words(
-                
                 model,
                 tok,
                 z_layer,
@@ -177,6 +176,7 @@ def apply_nse_to_model(
                 module_template=hparams.layer_module_tmp,
                 fact_token_strategy=hparams.fact_token,
             )[1].T
+            
             targets = zs[:,indices] - cur_zs
             print("z error", torch.linalg.norm(targets, dim=0).mean())
             repeat_factor = (layer_ks.size(1) // targets.size(1))
@@ -212,7 +212,6 @@ def apply_nse_to_model(
                 layer_ks[selected_rows, :],
             )
             
-            pdb.set_trace()
             resid = targets/(len(hparams.layers) - i)
             partial_upd_matrix = resid @ adj_k.T
             # Adjust update matrix shape
