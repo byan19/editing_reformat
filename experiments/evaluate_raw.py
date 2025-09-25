@@ -1,6 +1,5 @@
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 import json
 import shutil
 from itertools import islice
@@ -251,7 +250,8 @@ def main(
 		seq_args = dict(cache_c=cache_c) if any(
 			alg in alg_name for alg in ["AlphaEdit", "MEMIT_seq", "NSE"]) else dict()
 		nc_args = dict(P=P) if any(alg in alg_name for alg in ["AlphaEdit"]) else dict()
-		if cnt == 0 and args.downstream_eval_steps > 0:  # do initial GLUE EVAL WITH ORIGINAL MODEL
+		
+		if cnt == 0 and args.downstream_eval_steps > 0 and not debugging_mood:  # do initial GLUE EVAL WITH ORIGINAL MODEL
 			glue_results = {'edit_num': -1}
 			
 			out_file = glue_save_location + "base.json"
