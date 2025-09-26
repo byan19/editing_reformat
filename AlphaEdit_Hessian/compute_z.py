@@ -197,8 +197,7 @@ def compute_z_original(
     return target
 
 
-
-def compute_z(
+def compute_z_version0(
         model: AutoModelForCausalLM,
         tok: AutoTokenizer,
         request: Dict,
@@ -513,7 +512,7 @@ def compute_fisher_vector(
     return fisher_vec
 
 
-def compute_z_debugging(
+def compute_z(
     model: AutoModelForCausalLM,
     tok: AutoTokenizer,
     request: Dict,
@@ -782,15 +781,13 @@ def compute_z_debugging(
     )
     
     
-    '''
     fisher_vec = compute_fisher_vector(model , tok, request , hparams , layer, context_templates)
     
     with torch.no_grad():
         fisher_vec = fisher_vec.reshape(-1, fisher_vec.shape[2])
         fisher_matrix = fisher_vec.t().matmul(fisher_vec)
     #torch.cuda.empty_cache()
-    '''
-    fisher_matrix = 1.1111
+    #fisher_matrix = 1.1111
     return target, fisher_matrix
 
 def get_module_input_output_at_words(
