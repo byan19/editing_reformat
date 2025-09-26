@@ -139,8 +139,12 @@ def apply_AlphaEdit_Hessian_to_model(
                 P[i,:,:].cuda() @ (layer_ks @ layer_ks.T + cache_c[i,:,:].cuda()) + hparams.L2*torch.eye(layer_ks.shape[0], dtype=torch.float,device="cuda"), # Matrix A
             P[i,:,:].cuda() @ layer_ks @ resid.T # matrix B
         )
-        pdb.set_trace()
+        
+        print('update matrix')
         print(upd_matrix)
+        
+        print('fisher matrix')
+        print(fisher_matrix)
         '''
         pdb.set_trace()
         tmp = upd_matrix @ fisher_matrix

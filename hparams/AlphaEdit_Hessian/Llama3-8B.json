@@ -11,7 +11,7 @@
     "kl_factor": 0.0625,
 
     "flat_loss_lambda": 10.0,
-    "flatness_loss": false,
+    "flatness_loss": true,
     "noise_scale": 0.001,
 
     "mom2_adjustment": true,
