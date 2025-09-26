@@ -153,7 +153,8 @@ def apply_AlphaEdit_Hessian_to_model(
         '''
         
         tmp = upd_matrix @ (fisher_matrix/ fisher_matrix.max() + torch.eye(fisher_matrix.shape[0], dtype=torch.float,device="cuda"))
-        print(upd_matrix)
+        print('the final solution with fisher matrix')
+        print(tmp)
         # Adjust update matrix shape
         weight_name = f"{hparams.rewrite_module_tmp.format(layer)}.weight"
         upd_matrix = upd_matrix_match_shape(upd_matrix, weights[weight_name].shape)
