@@ -133,6 +133,7 @@ def main(
         model, tok = model_name
         model_name = model.config._name_or_path
 
+
     # Load data
     print("Loading dataset, attribute snippets, tf-idf data")
     snips = AttributeSnippets(DATA_DIR) if not skip_generation_tests else None
