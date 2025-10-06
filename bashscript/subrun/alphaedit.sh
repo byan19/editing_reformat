@@ -1,7 +1,7 @@
 #!/bin/bash
 CUDA_VISIBLE_DEVICES=0 python -m experiments.evaluate \
 --alg_name=AlphaEdit \
---model_name=/root/autodl-tmp/meta-llama3-8b-instruct \
+--model_name=meta-llama/Meta-Llama-3-8B-Instruct \
 --hparams_fname=Llama3-8B.json \
 --ds_name=mcf \
 --dataset_size_limit=100 \
@@ -13,7 +13,7 @@ CUDA_VISIBLE_DEVICES=0 python -m experiments.evaluate \
 # the default choise of the models
 #--model_name=meta-llama/Llama-2-7b-hf \
 #--model_name=meta-llama/Meta-Llama-3-8B-Instruct \
-#--model_name=/root/autodl-tmp/models/meta-llama3-8b-instruct \
+#--model_name=/root/autodl-tmp/meta-llama3-8b-instruct \
 #--num_edits=100 \
 
 
