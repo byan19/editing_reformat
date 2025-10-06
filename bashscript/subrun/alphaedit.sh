@@ -4,8 +4,8 @@ CUDA_VISIBLE_DEVICES=0 python -m experiments.evaluate \
 --model_name=meta-llama/Meta-Llama-3-8B-Instruct \
 --hparams_fname=Llama3-8B.json \
 --ds_name=mcf \
---dataset_size_limit=50 \
---num_edits=50 \
+--dataset_size_limit=20 \
+--num_edits=20 \
 --downstream_eval_steps=5 \
 --debugging_mood=1 \
 

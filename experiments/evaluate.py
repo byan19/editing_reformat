@@ -451,6 +451,7 @@ def main(
 
         print("Evaluation took", time() - start)
     print(f'@@@@@@@@@@ total time cost: {time() -alpha_startingtime}')
+    print(f' the output file is: {out_file}')
 def get_project(model, tok, layer, hparams, dir ='data/stats/llama3-8b-instruct/wikipedia_stats' ):
     force_recompute = False
     print('project computation')
