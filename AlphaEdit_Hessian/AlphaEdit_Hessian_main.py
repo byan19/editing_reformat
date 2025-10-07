@@ -47,7 +47,6 @@ def apply_AlphaEdit_Hessian_to_model(
             f"[{request['prompt'].format(request['subject'])}] -> [{request['target_new']['str']}]"
         )
 
-    pdb.set_trace()
     # Retrieve weights that user desires to change
     weights = {
         f"{hparams.rewrite_module_tmp.format(layer)}.weight": nethook.get_parameter(
