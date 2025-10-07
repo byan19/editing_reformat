@@ -291,8 +291,6 @@ def main(
         # runing on the AlphaEdit, Menit and NSE
         #if any(alg in alg_name for alg in ["AlphaEdit",  "MEMIT_seq", "NSE"]):
         if alg_name == 'AlphaEdit' or alg_name == 'MEMIT_seq' or alg_name == 'NSE':
-            print('in AlphaEdit')
-            pdb.set_trace()
             edited_model, cache_c = apply_algo(
                 model,
                 tok,
@@ -312,8 +310,6 @@ def main(
                 **nc_args,
             )
         elif alg_name == 'AlphaEdit_Hessian':
-            print('in AlphaEdit_Hessian')
-            pdb.set_trace()
             edited_model, cache_c, hessian = apply_algo(
                 model,
                 tok,
