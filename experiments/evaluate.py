@@ -270,7 +270,6 @@ def main(
             hessian = torch.eye(P.shape[-1]).unsqueeze(0).repeat(P.shape[0], 1, 1)
             hess_args = dict(hessian = hessian)  if any(alg in alg_name for alg in ["AlphaEdit_Hessian"]) else dict()
         
-        pdb.set_trace()
         #do initial GLUE EVAL WITH ORIGINAL MODEL
         if cnt == 0 and args.downstream_eval_steps > 0 and not debugging_mood:
             print('generate GLUEVAL')
@@ -310,6 +309,7 @@ def main(
                 **nc_args,
             )
         elif alg_name == 'AlphaEdit_Hessian':
+            pdb.set_trace()
             edited_model, cache_c, hessian = apply_algo(
                 model,
                 tok,
