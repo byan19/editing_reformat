@@ -289,7 +289,8 @@ def main(
         start = time()
         tmp = [ {"case_id": record["case_id"], **rewrite_dict} for record in record_chunks for rewrite_dict in ( record["requested_rewrite"] if isinstance(record["requested_rewrite"], list) else [record["requested_rewrite"]] ) ]
         # runing on the AlphaEdit, Menit and NSE
-        if any(alg in alg_name for alg in ["AlphaEdit",  "MEMIT_seq", "NSE"]):
+        #if any(alg in alg_name for alg in ["AlphaEdit",  "MEMIT_seq", "NSE"]):
+        if alg_name == 'AlphaEdit' or alg_name == 'MEMIT_seq' or alg_name == 'NSE':
             print('in AlphaEdit')
             pdb.set_trace()
             edited_model, cache_c = apply_algo(
