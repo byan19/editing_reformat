@@ -239,7 +239,6 @@ def main(
     os.makedirs(glue_save_location, exist_ok=True)
     
     cnt = 0
-    pdb.set_trace()
     for record_chunks in chunks(ds, num_edits):
         case_result_template = str(run_dir / "{}_edits-case_{}.json")
         print(f"=================================================================={cnt+1}_edit==================================================================")
@@ -262,7 +261,6 @@ def main(
             else dict()
         )
         
-        pdb.set_trace()
         
         
         etc_args = dict(cache_template=cache_template) if any(alg in alg_name for alg in ["ROME", "MEMIT","AlphaEdit", "AlphaEdit_Hessian", "MEMIT_seq", "MEMIT_prune", "NSE"]) else dict()
