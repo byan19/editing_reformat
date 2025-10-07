@@ -29,6 +29,7 @@ def apply_AlphaEdit_Hessian_to_model(
     cache_template: Optional[str] = None,
     cache_c = None,
     P = None,
+    hessian = None
 ) -> Dict[str, Tuple[torch.Tensor]]:
     """
     Executes the MEMIT update algorithm for the specified update at the specified layer
@@ -46,6 +47,7 @@ def apply_AlphaEdit_Hessian_to_model(
             f"[{request['prompt'].format(request['subject'])}] -> [{request['target_new']['str']}]"
         )
 
+    pdb.set_trace()
     # Retrieve weights that user desires to change
     weights = {
         f"{hparams.rewrite_module_tmp.format(layer)}.weight": nethook.get_parameter(
@@ -152,7 +154,7 @@ def apply_AlphaEdit_Hessian_to_model(
         tmp = upd_matrix @ (fisher_matrix/ fisher_matrix.max() + torch.eye(fisher_matrix.shape[0], dtype=torch.float,device="cuda"))
         '''
         
-        upd_matrix = upd_matrix @ (fisher_matrix/ fisher_matrix.max() + torch.eye(fisher_matrix.shape[0], dtype=torch.float,device="cuda"))
+        upd_matrix = upd_matrix @ hessian[i, :, : ].cuda()
         print('the final solution with fisher matrix')
         print(upd_matrix)
         # Adjust update matrix shape
@@ -171,9 +173,11 @@ def apply_AlphaEdit_Hessian_to_model(
     for i, layer in enumerate(hparams.layers):
         layer_ks = compute_ks(model, tok, requests, hparams, layer, context_templates).T
         cache_c[i,:,:] += layer_ks.cpu() @ layer_ks.cpu().T
+        hessian[i, :, : ] += (fisher_matrix/ fisher_matrix.max() + torch.eye(fisher_matrix.shape[0], dtype=torch.float,device="cpu"))
+    
 
     print(f"Deltas successfully computed for {list(weights.keys())}")
-    return model, cache_c
+    return model, cache_c, hessian
 
 
 def get_cov(

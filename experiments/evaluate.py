@@ -264,9 +264,14 @@ def main(
         
         pdb.set_trace()
         
+        
         etc_args = dict(cache_template=cache_template) if any(alg in alg_name for alg in ["ROME", "MEMIT","AlphaEdit", "AlphaEdit_Hessian", "MEMIT_seq", "MEMIT_prune", "NSE"]) else dict()
         seq_args = dict(cache_c=cache_c) if any(alg in alg_name for alg in ["AlphaEdit", "AlphaEdit_Hessian", "MEMIT_seq", "NSE"]) else dict()
         nc_args = dict(P = P) if any(alg in alg_name for alg in ["AlphaEdit", "AlphaEdit_Hessian"]) else dict()
+        
+        if alg_name == "AlphaEdit_Hessian":
+            hessian = torch.eye(P.shape[-1]).unsqueeze(0).repeat(P.shape[0], 1, 1)
+            hess_args = dict(hessian = hessian)  if any(alg in alg_name for alg in ["AlphaEdit_Hessian"]) else dict()
         
         #do initial GLUE EVAL WITH ORIGINAL MODEL
         if cnt == 0 and args.downstream_eval_steps > 0 and not debugging_mood:
@@ -287,7 +292,7 @@ def main(
         start = time()
         tmp = [ {"case_id": record["case_id"], **rewrite_dict} for record in record_chunks for rewrite_dict in ( record["requested_rewrite"] if isinstance(record["requested_rewrite"], list) else [record["requested_rewrite"]] ) ]
         # runing on the AlphaEdit, Menit and NSE
-        if any(alg in alg_name for alg in ["AlphaEdit", "AlphaEdit_Hessian", "MEMIT_seq", "NSE"]):
+        if any(alg in alg_name for alg in ["AlphaEdit",  "MEMIT_seq", "NSE"]):
             edited_model, cache_c = apply_algo(
                 model,
                 tok,
@@ -305,6 +310,26 @@ def main(
                 **etc_args,
                 **seq_args,
                 **nc_args,
+            )
+        elif alg_name == 'AlphaEdit_Hessian':
+            edited_model, cache_c, hessian = apply_algo(
+                model,
+                tok,
+                [
+                    {"case_id": record["case_id"], **rewrite_dict}
+                    for record in record_chunks
+                    for rewrite_dict in (
+                    record["requested_rewrite"]
+                    if isinstance(record["requested_rewrite"], list)
+                    else [record["requested_rewrite"]]
+                )
+                ],
+                hparams,
+                **args_conserve_memory,
+                **etc_args,
+                **seq_args,
+                **nc_args,
+                **hess_args
             )
         # runing on MEMIT_prune
         elif alg_name == "MEMIT_prune":
