@@ -262,7 +262,6 @@ def main(
         )
         
         
-        
         etc_args = dict(cache_template=cache_template) if any(alg in alg_name for alg in ["ROME", "MEMIT","AlphaEdit", "AlphaEdit_Hessian", "MEMIT_seq", "MEMIT_prune", "NSE"]) else dict()
         seq_args = dict(cache_c=cache_c) if any(alg in alg_name for alg in ["AlphaEdit", "AlphaEdit_Hessian", "MEMIT_seq", "NSE"]) else dict()
         nc_args = dict(P = P) if any(alg in alg_name for alg in ["AlphaEdit", "AlphaEdit_Hessian"]) else dict()
@@ -271,6 +270,7 @@ def main(
             hessian = torch.eye(P.shape[-1]).unsqueeze(0).repeat(P.shape[0], 1, 1)
             hess_args = dict(hessian = hessian)  if any(alg in alg_name for alg in ["AlphaEdit_Hessian"]) else dict()
         
+        pdb.set_trace()
         #do initial GLUE EVAL WITH ORIGINAL MODEL
         if cnt == 0 and args.downstream_eval_steps > 0 and not debugging_mood:
             print('generate GLUEVAL')
