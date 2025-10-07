@@ -290,6 +290,8 @@ def main(
         tmp = [ {"case_id": record["case_id"], **rewrite_dict} for record in record_chunks for rewrite_dict in ( record["requested_rewrite"] if isinstance(record["requested_rewrite"], list) else [record["requested_rewrite"]] ) ]
         # runing on the AlphaEdit, Menit and NSE
         if any(alg in alg_name for alg in ["AlphaEdit",  "MEMIT_seq", "NSE"]):
+            print('in AlphaEdit')
+            pdb.set_trace()
             edited_model, cache_c = apply_algo(
                 model,
                 tok,
@@ -309,6 +311,7 @@ def main(
                 **nc_args,
             )
         elif alg_name == 'AlphaEdit_Hessian':
+            print('in AlphaEdit_Hessian')
             pdb.set_trace()
             edited_model, cache_c, hessian = apply_algo(
                 model,
