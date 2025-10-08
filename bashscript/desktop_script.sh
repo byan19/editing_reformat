@@ -27,11 +27,12 @@ Tunning=${Tunning_list[$idx]}
 
 
 sessionname=editing_test2
-sessionname=editing_alphaedit
+sessionname=editing_alphaedit_hessian
 
 
 File=bashscript/subrun/nse.sh
 File=bashscript/subrun/alphaedit.sh
+File=bashscript/subrun/alphaedit_hessian.sh
 
 CHECK=${sessionname}
 
