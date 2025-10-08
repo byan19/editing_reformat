@@ -1,9 +1,10 @@
 #!/bin/bash
 dataset_limit=$1
 num_each_round=$2
-CUDA_VISIBLE_DEVICES=0 python -m experiments.evaluate \
+model_name=$3
+python -m experiments.evaluate \
 --alg_name=AlphaEdit_Hessian \
---model_name=meta-llama/Meta-Llama-3-8B-Instruct \
+--model_name=${model_name} \
 --hparams_fname=Llama3-8B.json \
 --ds_name=mcf \
 --dataset_size_limit=${dataset_limit} \
