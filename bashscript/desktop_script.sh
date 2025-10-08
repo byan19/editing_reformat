@@ -25,17 +25,16 @@ for ((idx=0; idx<${#Target_Para_List[@]}; idx++)); do
 Param=${Target_Para_List[$idx]}
 Tunning=${Tunning_list[$idx]}
 
-sessionname=editing_test2
-
 dataset_limit=200
 num_each_round=100
 model_name=meta-llama/Meta-Llama-3-8B-Instruct
 
 File=bashscript/subrun/nse.sh
-File=bashscript/subrun/alphaedit.sh
 File=bashscript/subrun/alphaedit_hessian.sh
+File=bashscript/subrun/alphaedit.sh
 
 sessionname=editing_alphaedit_hessian_L${dataset_limit}_NR${num_each_round}
+sessionname=editing_alphaedit_L${dataset_limit}_NR${num_each_round}
 
 
 MultiRun ${sessionname} ${File} ${dataset_limit} ${num_each_round} ${model_name}
