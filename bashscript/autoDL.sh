@@ -6,6 +6,7 @@ Param1=$3
 Param2=$4
 Param3=$5
 Param4=$6
+Param5=$7
 echo "${sessionname}"
 
 screen -dmS "$sessionname"
@@ -14,7 +15,7 @@ screen -S $sessionname -X stuff "cd /root/autodl-tmp/project/hessian_editing^M"
 #screen -S $sessionname -X stuff "source activate editing^M"
 sleep 1.0s
 echo ${File}
-screen -S $sessionname -X stuff "bash ${File} ${Param1} ${Param2} ${Param3} ${Param4}^M"
+screen -S $sessionname -X stuff "bash ${File} ${Param1} ${Param2} ${Param3} ${Param4} ${Param5}^M"
 }
 
 Target_Para_List=(o_proj q_proj k_proj v_proj)
@@ -26,10 +27,14 @@ Param=${Target_Para_List[$idx]}
 Tunning=${Tunning_list[$idx]}
 
 gpu=0
+model_name=/root/autodl-tmp/meta-llama3-8b-instruct
 
 dataset_limit=2000
 num_each_round=200
-model_name=/root/autodl-tmp/meta-llama3-8b-instruct
+dataset_name=cf
+
+
+
 
 algo=alphaedit
 algo=nse
@@ -44,5 +49,5 @@ File=bashscript/subrun/${algo}.sh
 sessionname=${algo}_L${dataset_limit}_NR${num_each_round}
 
 
-MultiRun ${sessionname} ${File} ${dataset_limit} ${num_each_round} ${model_name} ${gpu}
+MultiRun ${sessionname} ${File} ${dataset_limit} ${num_each_round} ${model_name} ${gpu} ${dataset_name}
 done
