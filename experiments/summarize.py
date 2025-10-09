@@ -135,7 +135,7 @@ def summarize(
         for prefix in ["pre", "post"]:
             for k_efficacy, k_generalization, k_specificity in [
                 (
-                    f"{prefix}_rewrite_success",
+                    f"{prefix}_rewrite_success", # to check (Efficacy)
                     #f"{prefix}_paraphrase_success (Generalization)",
                     f"{prefix}_paraphrase_success", #(Generalization)
                     f"{prefix}_neighborhood_success",
@@ -159,7 +159,7 @@ def summarize(
                     #     hmean_list.append(cur_sum[f"{prefix}_reference_score"][0])
 
                     cur_sum[f"{prefix}_score"] = (hmean(hmean_list), np.nan)
-                    cur_sum[f"{prefix}_efficacy"] = (cur_sum[k_efficacy], np.nan)
+                    #cur_sum[f"{prefix}_efficacy"] = (cur_sum[k_efficacy])
                     break
 
         print(metadata)
