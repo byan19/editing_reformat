@@ -159,7 +159,13 @@ def summarize(
                     #     hmean_list.append(cur_sum[f"{prefix}_reference_score"][0])
 
                     cur_sum[f"{prefix}_score"] = (hmean(hmean_list), np.nan)
-                    #cur_sum[f"{prefix}_efficacy"] = (cur_sum[k_efficacy])
+                    
+                    cur_sum[f"{prefix}_Efficacy"] = (cur_sum[k_efficacy])
+                    cur_sum[f"{prefix}_Generalization"] = cur_sum[f"{prefix}_paraphrase_success"]
+                    cur_sum[f"{prefix}_Fluency"] = cur_sum[f"{prefix}_ngram_entropy"]
+                    cur_sum[f"{prefix}_Consistency"] = cur_sum[f"{prefix}_reference_score"]
+                    cur_sum[f"{prefix}_Specificity"] = cur_sum[f"{prefix}_neighborhood_success"]
+
                     break
 
         print(metadata)
