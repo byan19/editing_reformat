@@ -77,7 +77,7 @@ def summarize(
                     )
 
                 # Probability metrics for which true should be lower (better) than new
-                sum_key_discrete = f"{prefix}_neighborhood_success"
+                sum_key_discrete = f"{prefix}_neighborhood_success (Specificity)"
                 sum_key_cont = f"{prefix}_neighborhood_diff"
                 key = "neighborhood_prompts_probs"
                 if prefix in data and key in data[prefix]:
@@ -109,7 +109,7 @@ def summarize(
                     cur_sum[sum_key].append(np.mean(data[prefix][key]))
 
                 # Generation metrics that can be directly averaged
-                for key in ["ngram_entropy", "reference_score", "essence_score"]:
+                for key in ["ngram_entropy (Fluency)", "reference_score (Consistency)", "essence_score"]:
                     if prefix in data and key in data[prefix]:
                         cur_sum[f"{prefix}_{key}"].append(data[prefix][key])
 
@@ -134,7 +134,7 @@ def summarize(
             for k_efficacy, k_generalization, k_specificity in [
                 (
                     f"{prefix}_rewrite_success",
-                    f"{prefix}_paraphrase_success",
+                    f"{prefix}_paraphrase_success (Generalization)",
                     f"{prefix}_neighborhood_success",
                 ),
                 # (
