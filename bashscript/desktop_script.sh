@@ -29,12 +29,18 @@ dataset_limit=2000
 num_each_round=200
 model_name=meta-llama/Meta-Llama-3-8B-Instruct
 
-File=bashscript/subrun/nse.sh
-File=bashscript/subrun/alphaedit_hessian.sh
-File=bashscript/subrun/alphaedit.sh
 
-sessionname=editing_alphaedit_hessian_L${dataset_limit}_NR${num_each_round}
-sessionname=editing_alphaedit_L${dataset_limit}_NR${num_each_round}
+algo=alphaedit
+algo=nse
+algo=alphaedit_hessian
+
+#File=bashscript/subrun/nse.sh
+#File=bashscript/subrun/alphaedit_hessian.sh
+#File=bashscript/subrun/alphaedit.sh
+
+File=bashscript/subrun/${algo}.sh
+
+sessionname=${algo}_L${dataset_limit}_NR${num_each_round}
 
 
 MultiRun ${sessionname} ${File} ${dataset_limit} ${num_each_round} ${model_name}
