@@ -25,8 +25,8 @@ for ((idx=0; idx<${#Target_Para_List[@]}; idx++)); do
 Param=${Target_Para_List[$idx]}
 Tunning=${Tunning_list[$idx]}
 
-dataset_limit=200
-num_each_round=100
+dataset_limit=2000
+num_each_round=200
 model_name=meta-llama/Meta-Llama-3-8B-Instruct
 
 File=bashscript/subrun/nse.sh
