@@ -3,6 +3,7 @@ dataset_limit=$1
 num_each_round=$2
 model_name=$3
 gpu=$4
+
 CUDA_VISIBLE_DEVICES=${gpu} python -m experiments.evaluate \
 --alg_name=AlphaEdit \
 --model_name=${model_name} \

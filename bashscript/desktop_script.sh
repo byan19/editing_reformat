@@ -26,7 +26,7 @@ for ((idx=0; idx<${#Target_Para_List[@]}; idx++)); do
 Param=${Target_Para_List[$idx]}
 Tunning=${Tunning_list[$idx]}
 
-gpu=1
+gpu=0
 
 dataset_limit=2000
 num_each_round=200
