@@ -33,11 +33,12 @@ model_name=meta-llama/Meta-Llama-3-8B-Instruct
 dataset_limit=2000
 num_each_round=200
 dataset_name=cf
+dataset_name=zsre
 
 
-algo=alphaedit
 algo=nse
 algo=alphaedit_hessian
+algo=alphaedit
 
 #File=bashscript/subrun/nse.sh
 #File=bashscript/subrun/alphaedit_hessian.sh
