@@ -20,6 +20,7 @@ screen -S $sessionname -X stuff "bash ${File} ${Param1} ${Param2} ${Param3} ${Pa
 
 
 Target_Para_List=(alphaedit alphaedit_hessian)
+Target_Para_List=(0 )
 
 for ((idx=0; idx<${#Target_Para_List[@]}; idx++)); do
 Target_param=${Target_Para_List[$idx]}
@@ -35,8 +36,8 @@ dataset_name=mcf
 
 algo=nse
 algo=alphaedit_hessian
-algo=alphaedit
 algo=${Target_param}
+algo=alphaedit
 
 #File=bashscript/subrun/nse.sh
 #File=bashscript/subrun/alphaedit_hessian.sh
