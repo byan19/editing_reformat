@@ -19,13 +19,10 @@ screen -S $sessionname -X stuff "bash ${File} ${Param1} ${Param2} ${Param3} ${Pa
 }
 
 
-Target_Para_List=(o_proj q_proj k_proj v_proj)
-Target_Para_List=(o_proj)
-Tunning_list=(0 )
+Target_Para_List=(alphaedit alphaedit_hessian)
 
 for ((idx=0; idx<${#Target_Para_List[@]}; idx++)); do
-Param=${Target_Para_List[$idx]}
-Tunning=${Tunning_list[$idx]}
+Target_param=${Target_Para_List[$idx]}
 
 gpu=0
 model_name=meta-llama/Meta-Llama-3-8B-Instruct
@@ -39,6 +36,7 @@ dataset_name=mcf
 algo=nse
 algo=alphaedit_hessian
 algo=alphaedit
+algo=${Target_param}
 
 #File=bashscript/subrun/nse.sh
 #File=bashscript/subrun/alphaedit_hessian.sh
