@@ -32,12 +32,13 @@ model_name=/root/autodl-tmp/meta-llama3-8b-instruct
 dataset_limit=3000
 num_each_round=100
 dataset_name=mcf
+dataset_name=zsre
 
 
 
-algo=alphaedit
 algo=nse
 algo=alphaedit_hessian
+algo=alphaedit
 
 #File=bashscript/subrun/nse.sh
 #File=bashscript/subrun/alphaedit_hessian.sh
