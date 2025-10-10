@@ -12,7 +12,7 @@ CUDA_VISIBLE_DEVICES=${gpu} python -m experiments.evaluate \
 --ds_name=${dataset_name} \
 --dataset_size_limit=${dataset_limit} \
 --num_edits=${num_each_round} \
---downstream_eval_steps=2 \
+--downstream_eval_steps=5 \
 --debugging_mood=1 \
 
 

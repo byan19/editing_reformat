@@ -30,10 +30,10 @@ Tunning=${Tunning_list[$idx]}
 gpu=0
 model_name=meta-llama/Meta-Llama-3-8B-Instruct
 
-dataset_limit=2000
-num_each_round=200
-dataset_name=cf
+dataset_limit=3000
+num_each_round=100
 dataset_name=zsre
+dataset_name=mcf
 
 
 algo=nse

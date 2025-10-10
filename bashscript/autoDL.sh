@@ -31,8 +31,8 @@ model_name=/root/autodl-tmp/meta-llama3-8b-instruct
 
 dataset_limit=3000
 num_each_round=100
-dataset_name=mcf
 dataset_name=zsre
+dataset_name=mcf
 
 
 
