@@ -29,10 +29,9 @@ Tunning=${Tunning_list[$idx]}
 gpu=0
 model_name=/root/autodl-tmp/meta-llama3-8b-instruct
 
-dataset_limit=2000
-num_each_round=200
-dataset_name=cf
-
+dataset_limit=3000
+num_each_round=100
+dataset_name=mcf
 
 
 
@@ -46,7 +45,7 @@ algo=alphaedit_hessian
 
 File=bashscript/subrun/${algo}.sh
 
-sessionname=${algo}_L${dataset_limit}_NR${num_each_round}
+sessionname=${algo}_${dataset_name}_L${dataset_limit}_NR${num_each_round}
 
 
 MultiRun ${sessionname} ${File} ${dataset_limit} ${num_each_round} ${model_name} ${gpu} ${dataset_name}
