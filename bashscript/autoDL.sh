@@ -37,8 +37,8 @@ dataset_name=mcf
 
 
 algo=nse
-algo=alphaedit_hessian
 algo=alphaedit
+algo=alphaedit_hessian
 
 #File=bashscript/subrun/nse.sh
 #File=bashscript/subrun/alphaedit_hessian.sh
