@@ -1,10 +1,16 @@
 #!/bin/bash
-CUDA_VISIBLE_DEVICES=0 python -m experiments.evaluate \
+dataset_limit=$1
+num_each_round=$2
+model_name=$3
+gpu=$4
+dataset_name=$5
+
+CUDA_VISIBLE_DEVICES=${gpu} python -m experiments.evaluate \
 --alg_name=NSE \
---model_name=meta-llama/Meta-Llama-3-8B-Instruct \
+--model_name=${model_name} \
 --hparams_fname=Llama3-8B.json \
---ds_name=mcf \
---dataset_size_limit=2000 \
---num_edits=10 \
---downstream_eval_steps=5
-#--model_name=meta-llama/Llama-2-7b-hf \
+--ds_name=${dataset_name} \
+--dataset_size_limit=${dataset_limit} \
+--num_edits=${num_each_round} \
+--downstream_eval_steps=5 \
+--debugging_mood=1

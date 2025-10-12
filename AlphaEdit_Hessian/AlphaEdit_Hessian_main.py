@@ -173,7 +173,8 @@ def apply_AlphaEdit_Hessian_to_model(
         layer_ks = compute_ks(model, tok, requests, hparams, layer, context_templates).T
         cache_c[i,:,:] += layer_ks.cpu() @ layer_ks.cpu().T
         #hessian[i, :, : ] += (fisher_matrix/ fisher_matrix.max()).cpu() + torch.eye(fisher_matrix.shape[0], dtype=torch.float,device="cpu")
-        hessian[i, :, : ] += (fisher_matrix/ fisher_matrix.max()).cpu()
+        #hessian[i, :, : ] += (fisher_matrix/ fisher_matrix.max()).cpu()
+        hessian[i, :, : ] += fisher_matrix.cpu()
 
 
     print(f"Deltas successfully computed for {list(weights.keys())}")
