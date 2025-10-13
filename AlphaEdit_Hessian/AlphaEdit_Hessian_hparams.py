@@ -27,6 +27,7 @@ class AlphaEdit_Hessian_HyperParams(HyperParams):
     noise_scale: float
     flatness_loss: bool
     hessian_type: str
+    hessian_scale: float
 
     # Module templates
     rewrite_module_tmp: str

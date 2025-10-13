@@ -13,7 +13,8 @@
     "flat_loss_lambda": 10.0,
     "flatness_loss": true,
     "noise_scale": 0.001,
-    "hessian_type": "origin",
+    "hessian_type": "rescale_origin",
+    "hessian_scale": 0.1,
 
     "mom2_adjustment": true,
     "mom2_update_weight": 15000,
