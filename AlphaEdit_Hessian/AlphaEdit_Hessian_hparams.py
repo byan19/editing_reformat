@@ -22,10 +22,11 @@ class AlphaEdit_Hessian_HyperParams(HyperParams):
     mom2_adjustment: bool
     mom2_update_weight: float
     
-    # added by me
+    # for Hessian
     flat_loss_lambda: float
     noise_scale: float
     flatness_loss: bool
+    hessian_type: str
 
     # Module templates
     rewrite_module_tmp: str

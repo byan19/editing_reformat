@@ -4,16 +4,16 @@
     "clamp_norm_factor": 0.75,
     "layer_selection": "all",
     "fact_token": "subject_last",
-    "v_num_grad_steps": 25,
+    "v_num_grad_steps": 45,
     "v_lr": 1e-1,
     "v_loss_layer": 31,
     "v_weight_decay": 0.5,
     "kl_factor": 0.0625,
 
     "flat_loss_lambda": 10.0,
-    "flatness_loss": false,
+    "flatness_loss": true,
     "noise_scale": 0.001,
-
+    "hessian_type": "origin",
 
     "mom2_adjustment": true,
     "mom2_update_weight": 15000,
