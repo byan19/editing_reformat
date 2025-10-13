@@ -34,10 +34,10 @@ dataset_name=zsre
 dataset_name=mcf
 
 
-algo=alphaedit_hessian
 algo=${Target_param}
 algo=alphaedit
 algo=nse
+algo=alphaedit_hessian
 
 #File=bashscript/subrun/nse.sh
 #File=bashscript/subrun/alphaedit_hessian.sh
