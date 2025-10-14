@@ -10,10 +10,10 @@
     "v_weight_decay": 0.5,
     "kl_factor": 0.0625,
 
-    "flat_loss_lambda": 10.0,
+    "flat_loss_lambda": 1.0,
     "flatness_loss": true,
     "noise_scale": 0.001,
-    "hessian_type": "rescale_origin",
+    "hessian_type": "origin",
     "hessian_scale": 0.1,
 
     "mom2_adjustment": true,
