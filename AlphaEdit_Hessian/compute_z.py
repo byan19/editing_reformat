@@ -989,7 +989,7 @@ def compute_z(
                     , hidden_states[i - 1][torch.arange(logits.size(0)), pred_loc])
                 
                 conver_loss += numerator / demoninator
-            conver_loss = hparams.conver_loss_strenght * conver_loss
+            conver_loss = hparams.conver_loss_lambda * conver_loss
             
         else:
             conver_loss = torch.tensor([0.0]).mean()
