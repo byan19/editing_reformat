@@ -982,6 +982,9 @@ def compute_z(
         if hparams.conver_loss:
             conver_loss = 0.0
             pred_loc  = mask.argmax(dim = 1)
+            hidden_states = [tmp[:len(rewriting_prompts)] for tmp in hidden_states ]
+            
+            logits = logits[: len(rewriting_prompts)]
             for i in range(1, len(hidden_states) - 1):
                 pdb.set_trace()
                 numerator = torch.nn.functional.mse_loss(
