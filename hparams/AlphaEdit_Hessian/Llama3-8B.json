@@ -16,7 +16,7 @@
     "hessian_type": "origin",
     "hessian_scale": 0.1,
     "conver_loss": true,
-    "conver_loss_lambda": 0.1,
+    "conver_loss_lambda": 1.0,
 
     "mom2_adjustment": true,
     "mom2_update_weight": 15000,
