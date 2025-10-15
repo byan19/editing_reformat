@@ -512,6 +512,279 @@ def compute_fisher_vector(
     return fisher_vec
 
 
+def compute_z_flatness(
+        model: AutoModelForCausalLM,
+        tok: AutoTokenizer,
+        request: Dict,
+        hparams: AlphaEdit_Hessian_HyperParams,
+        layer: int,
+        context_templates: List[str],
+) -> Tuple[torch.Tensor, torch.Tensor]:
+    """
+    Computes the value (right) vector for the rank-1 update.
+    Runs a simple optimization procedure.
+    """
+    # pdb.set_trace()
+    # Get model parameters
+    lm_w, ln_f = (
+        nethook.get_module(model, f"{hparams.lm_head_module}").weight.T,
+        nethook.get_module(model, hparams.ln_f_module),
+    )
+    try:
+        lm_b = nethook.get_parameter(model, f"{hparams.lm_head_module}.bias")
+    except LookupError as _:
+        lm_b = next(model.parameters()).new_zeros(model.config.vocab_size)
+    
+    print("Computing right vector (v)")
+    
+    # Tokenize target into list of int token IDs
+    target_ids = tok(request["target_new"]["str"], return_tensors="pt").to("cuda")["input_ids"][0]
+    
+    if target_ids[0] == tok.bos_token_id or target_ids[0] == tok.unk_token_id:
+        target_ids = target_ids[1:]
+    # Compile list of rewriting and KL x/y pairs
+    rewriting_prompts, kl_prompts = [
+        context.format(request["prompt"]) + tok.decode(target_ids[:-1])
+        for context_types in context_templates
+        for context in context_types
+    ], ["{} is a"]
+    
+    all_prompts = rewriting_prompts + kl_prompts
+    
+    input_tok = tok(
+        [prompt.format(request["subject"]) for prompt in all_prompts],
+        return_tensors="pt",
+        padding=True,
+    ).to("cuda")
+    
+    # Compute rewriting targets
+    rewriting_targets = torch.tensor(-100, device="cuda").repeat(
+        len(rewriting_prompts), *input_tok["input_ids"].shape[1:]
+    )
+    for i in range(len(rewriting_prompts)):
+        ex_len = input_tok["attention_mask"][i].sum()
+        rewriting_targets[i, ex_len - len(target_ids): ex_len] = target_ids
+    
+    # Compute indices of the tokens where the fact is looked up
+    lookup_idxs = [
+        find_fact_lookup_idx(
+            prompt, request["subject"], tok, hparams.fact_token, verbose=(i == 0)
+        )
+        for i, prompt in enumerate(all_prompts)
+    ]
+    # Finalize rewrite and loss layers
+    loss_layer = max(hparams.v_loss_layer, layer)
+    print(f"Rewrite layer is {layer}")
+    print(f"Tying optimization objective to {loss_layer}")
+    
+    # Set up an optimization over a latent vector that, when output at the
+    # rewrite layer, i.e. hypothesized fact lookup location, will induce the
+    # target token to be predicted at the final layer.
+    if hasattr(model.config, 'n_embd'):
+        delta = torch.zeros((model.config.n_embd,), requires_grad=True, device="cuda")
+    elif hasattr(model.config, 'hidden_size'):
+        delta = torch.zeros((model.config.hidden_size,), requires_grad=True, device="cuda")
+    else:
+        raise NotImplementedError
+    target_init, kl_distr_init = None, None
+    
+    # Inserts new "delta" variable at the appropriate part of the computation
+    def edit_output_fn(cur_out, cur_layer):
+        nonlocal target_init
+        
+        if cur_layer == hparams.layer_module_tmp.format(layer):
+            # Store initial value of the vector of interest
+            if target_init is None:
+                print("Recording initial value of v*")
+                # Initial value is recorded for the clean sentence
+                target_init = cur_out[0][0, lookup_idxs[0]].detach().clone()
+            
+            # Add intervened delta
+            for i, idx in enumerate(lookup_idxs):
+                
+                if len(lookup_idxs) != len(cur_out[0]):
+                    cur_out[0][idx, i, :] += delta
+                else:
+                    cur_out[0][i, idx, :] += delta
+        
+        return cur_out
+    
+    # Optimizer
+    opt = torch.optim.Adam([delta], lr=hparams.v_lr)
+    nethook.set_requires_grad(False, model)
+    
+    # Execute optimization
+    for it in range(hparams.v_num_grad_steps):
+        opt.zero_grad()
+        
+        # Forward propagation
+        with nethook.TraceDict(
+                module=model,
+                layers=[
+                    hparams.layer_module_tmp.format(loss_layer),
+                    hparams.layer_module_tmp.format(layer),
+                ],
+                retain_input=False,
+                retain_output=True,
+                edit_output=edit_output_fn,
+        ) as tr:
+            # logits = model(**input_tok).logits
+            
+            output = model(**input_tok, output_hidden_states=True)
+            hidden_states = output.hidden_states[layer + 1: layer + 3]
+            logits = output.logits
+            
+            # Compute distribution for KL divergence
+            kl_logits = torch.stack(
+                [logits[i - len(kl_prompts), idx, :] for i, idx in enumerate(lookup_idxs[-len(kl_prompts):])],
+                dim=0,
+            )
+            
+            kl_log_probs = torch.nn.functional.log_softmax(kl_logits, dim=1)
+            
+            if kl_distr_init is None:
+                kl_distr_init = kl_log_probs.detach().clone()
+            
+            ####################################
+            # flatness approximation
+            ####################################
+            flatness_loss = hparams.flatness_loss
+            if flatness_loss:
+                print('flatness loss')
+                noise_scale = hparams.noise_scale
+                noise_holder = []
+                hooks = []
+                
+                '''
+                if 'gpt' in config['models'][0]:
+                    def hook_fn_local(module, input):
+                        """Function to add noise and store it."""
+                        noise = torch.randn_like(input[0]) * noise_scale
+                        post_layer_norm_holder.append(module.ln_2.base_layer.weight)
+                        input = (input[0] + noise * module.ln_2.base_layer.weight,)
+                        noise_holder.append(noise)
+                        return input
+
+                    for layer in self.model.transformer.h:
+                        hook = layer.register_forward_pre_hook(hook_fn_local)
+                        hooks.append(hook)
+                else:
+                '''
+                
+                def hook_fn_local(module, input):
+                    """Function to add noise and store it."""
+                    noise = torch.randn_like(input[0]) * noise_scale
+                    # post_layer_norm_holder.append(module.post_attention_layernorm.weight)
+                    input = (input[0] + noise)
+                    noise_holder.append(noise)
+                    return input
+                
+                hooks.append(model.model.layers[layer].register_forward_pre_hook(hook_fn_local))
+                noise_hidden_states = model(**input_tok, output_hidden_states=True).hidden_states[layer + 1: layer + 3]
+                
+                if flatness_loss:
+                    for ele in hooks:
+                        ele.remove()
+        
+        # Compute loss on rewriting targets
+        output = tr[hparams.layer_module_tmp.format(loss_layer)].output[0]
+        
+        if output.shape[1] != rewriting_targets.shape[1]: output = torch.transpose(output, 0, 1)
+        full_repr = output[:len(rewriting_prompts)]
+        
+        log_probs = torch.log_softmax(ln_f(full_repr) @ lm_w.to(full_repr.device) + lm_b.to(full_repr.device), dim=2)
+        
+        loss = torch.gather(
+            log_probs,
+            2,
+            torch.where(rewriting_targets != -100, rewriting_targets, 0).unsqueeze(2).to(log_probs.device),
+        ).squeeze(2)
+        mask = (rewriting_targets != -100).float()
+        
+        ## compute the flatness loss
+        if flatness_loss:
+            pred_loc = mask.argmax(dim=1)
+            
+            # noise_hidden_states = noise_hidden_states[:len(rewriting_prompts)]
+            # hidden_states= hidden_states[:len(rewriting_prompts)]
+            
+            noise_hidden_states = [tmp[:len(rewriting_prompts)] for tmp in noise_hidden_states]
+            hidden_states = [tmp[:len(rewriting_prompts)] for tmp in hidden_states]
+            
+            logits = logits[: len(rewriting_prompts)]
+            
+            grad_noise = noise_hidden_states[1][torch.arange(logits.size(0)), pred_loc] - \
+                         noise_hidden_states[0][torch.arange(logits.size(0)), pred_loc]
+            
+            grad = hidden_states[1][torch.arange(logits.size(0)), pred_loc] - \
+                   hidden_states[0][torch.arange(logits.size(0)), pred_loc]
+            
+            flat_loss = torch.nn.functional.softplus(
+                -1 * noise_holder[0][torch.arange(logits.size(0)), pred_loc] @ (grad_noise - grad).t() / noise_scale)
+            flat_loss = hparams.flat_loss_lambda * flat_loss.mean()
+        
+        else:
+            flat_loss = torch.tensor([0.0]).mean()
+        
+        '''
+        gradient_check = torch.autograd.grad(flat_loss.mean(), [delta], retain_graph = True)[0]
+        print(f' check gradient, {gradient_check.norm().item()}')
+        '''
+        
+        # Aggregate total losses
+        nll_loss_each = -(loss * mask.to(loss.device)).sum(1) / target_ids.size(0)
+        nll_loss = nll_loss_each.mean()
+        kl_loss = hparams.kl_factor * torch.nn.functional.kl_div(
+            kl_distr_init, kl_log_probs, log_target=True, reduction="batchmean"
+        )
+        
+        weight_decay = hparams.v_weight_decay * (
+                torch.norm(delta) / torch.norm(target_init) ** 2
+        )
+        
+        loss = nll_loss + kl_loss.to(nll_loss.device) + weight_decay.to(nll_loss.device) + flat_loss.to(nll_loss.device)
+        
+        print(
+            f"loss {np.round(loss.item(), 3)} = {np.round(nll_loss.item(), 3)} + {np.round(kl_loss.item(), 3)} + {np.round(weight_decay.item(), 3)} + {np.round(flat_loss.item(), 3)} "
+            f"avg prob of [{request['target_new']['str']}] "
+            f"{torch.exp(-nll_loss_each).mean().item()}"
+        )
+        
+        if loss < 5e-2:
+            break
+        
+        if it == hparams.v_num_grad_steps - 1:
+            break
+        
+        # Backpropagate
+        loss.backward()
+        opt.step()
+        
+        # Project within L2 ball
+        max_norm = hparams.clamp_norm_factor * target_init.norm()
+        if delta.norm() > max_norm:
+            with torch.no_grad():
+                delta[...] = delta * max_norm / delta.norm()
+        
+        if flatness_loss:
+            del hidden_states
+            del noise_hidden_states
+    
+    target = target_init + delta
+    print(
+        f"Init norm {target_init.norm()} | Delta norm {delta.norm()} | Target norm {target.norm()}"
+    )
+    
+    fisher_vec = compute_fisher_vector(model, tok, request, hparams, layer, context_templates)
+    
+    with torch.no_grad():
+        fisher_vec = fisher_vec.reshape(-1, fisher_vec.shape[2])
+        fisher_matrix = fisher_vec.t().matmul(fisher_vec)
+    # torch.cuda.empty_cache()
+    # fisher_matrix = 1.1111
+    return target, fisher_matrix
+
+
 def compute_z(
     model: AutoModelForCausalLM,
     tok: AutoTokenizer,
@@ -702,6 +975,25 @@ def compute_z(
         ).squeeze(2)
         mask = (rewriting_targets != -100).float()
         
+        ##
+        if hparams.conver_loss:
+            conver_loss = 0.0
+            pred_loc  = mask.argmax(dim = 1)
+            for i in range(len(hidden_states) - 1):
+                numerator = torch.nn.functional.mse_loss(
+                    hidden_states[i][torch.arange(logits.size(0)), pred_loc]
+                    , hidden_states[i + 1][torch.arange(logits.size(0)), pred_loc])
+                
+                demoninator = torch.nn.functional.mse_loss(
+                    hidden_states[i][torch.arange(logits.size(0)), pred_loc]
+                    , hidden_states[i - 1][torch.arange(logits.size(0)), pred_loc])
+                
+                conver_loss += numerator / demoninator
+            conver_loss = hparams.conver_loss_strenght * conver_loss
+            
+        else:
+            conver_loss = torch.tensor([0.0]).mean()
+
         ## compute the flatness loss
         if flatness_loss:
             pred_loc  = mask.argmax(dim = 1)
@@ -747,10 +1039,11 @@ def compute_z(
         )
         
         
-        loss = nll_loss + kl_loss.to(nll_loss.device) + weight_decay.to(nll_loss.device) + flat_loss.to(nll_loss.device)
+        loss = nll_loss + kl_loss.to(nll_loss.device) + weight_decay.to(nll_loss.device) + flat_loss.to(nll_loss.device) + conver_loss.to(nll_loss.device)
         
         print(
             f"loss {np.round(loss.item(), 3)} = {np.round(nll_loss.item(), 3)} + {np.round(kl_loss.item(), 3)} + {np.round(weight_decay.item(), 3)} + {np.round(flat_loss.item(), 3)} "
+            f"+ {np.round(conver_loss.item(), 3)} "
             f"avg prob of [{request['target_new']['str']}] "
             f"{torch.exp(-nll_loss_each).mean().item()}"
         )
