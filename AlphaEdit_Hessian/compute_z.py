@@ -906,7 +906,7 @@ def compute_z(
             
             output = model(**input_tok,output_hidden_states=True)
             if hparams.conver_loss:
-                hidden_states = output.hidden_states[layer-1: layer+4]
+                hidden_states = output.hidden_states[layer-2: layer+4]
             elif hparams.flatness_loss:
                 hidden_states = output.hidden_states[layer + 1: layer + 3]
             logits = output.logits
