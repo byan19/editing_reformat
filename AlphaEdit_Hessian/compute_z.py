@@ -905,7 +905,10 @@ def compute_z(
             #logits = model(**input_tok).logits
             
             output = model(**input_tok,output_hidden_states=True)
-            hidden_states = output.hidden_states[layer+1: layer+3]
+            if hparams.conver_loss:
+                hidden_states = output.hidden_states[layer-1: layer+4]
+            elif hparams.flatness_loss:
+                hidden_states = output.hidden_states[layer + 1: layer + 3]
             logits = output.logits
 
             # Compute distribution for KL divergence
@@ -976,11 +979,10 @@ def compute_z(
         mask = (rewriting_targets != -100).float()
         
         ##
-        pdb.set_trace()
         if hparams.conver_loss:
             conver_loss = 0.0
             pred_loc  = mask.argmax(dim = 1)
-            for i in range(len(hidden_states) - 1):
+            for i in range(1, len(hidden_states) - 1):
                 numerator = torch.nn.functional.mse_loss(
                     hidden_states[i][torch.arange(logits.size(0)), pred_loc]
                     , hidden_states[i + 1][torch.arange(logits.size(0)), pred_loc])
