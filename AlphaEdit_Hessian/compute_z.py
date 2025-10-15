@@ -976,6 +976,7 @@ def compute_z(
         mask = (rewriting_targets != -100).float()
         
         ##
+        pdb.set_trace()
         if hparams.conver_loss:
             conver_loss = 0.0
             pred_loc  = mask.argmax(dim = 1)
