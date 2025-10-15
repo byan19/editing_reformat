@@ -13,6 +13,7 @@ def load_data(filename):
     a_file.close()
     return output
 
+
 # def load_data_split(filename, split):
 #     a_file = open(filename, "rb")
 #     output = pickle.load(a_file)
