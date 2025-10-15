@@ -983,6 +983,7 @@ def compute_z(
             conver_loss = 0.0
             pred_loc  = mask.argmax(dim = 1)
             for i in range(1, len(hidden_states) - 1):
+                pdb.set_trace()
                 numerator = torch.nn.functional.mse_loss(
                     hidden_states[i][torch.arange(logits.size(0)), pred_loc]
                     , hidden_states[i + 1][torch.arange(logits.size(0)), pred_loc])
