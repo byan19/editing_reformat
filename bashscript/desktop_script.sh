@@ -28,8 +28,8 @@ Target_param=${Target_Para_List[$idx]}
 gpu=0
 model_name=meta-llama/Meta-Llama-3-8B-Instruct
 
-dataset_limit=2000
-num_each_round=500
+dataset_limit=3000
+num_each_round=100
 dataset_name=zsre
 dataset_name=mcf
 
