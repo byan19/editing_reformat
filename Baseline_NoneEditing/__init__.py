@@ -1,1 +1,1 @@
-from .Baseline_NoneEditing_main import AlphaEditHyperParams, apply_AlphaEdit_to_model
+from .Baseline_NoneEditing_main import Baseline_NoneEditingHyperParams, apply_Baseline_NoneEditing_to_model

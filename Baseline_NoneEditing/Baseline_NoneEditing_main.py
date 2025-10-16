@@ -14,7 +14,7 @@ from util.globals import *
 
 from .compute_ks import compute_ks
 from .compute_z import compute_z, get_module_input_output_at_words, find_fact_lookup_idx
-from .Baseline_NoneEditing_hparams import AlphaEditHyperParams
+from .Baseline_NoneEditing_hparams import Baseline_NoneEditingHyperParams
 # Cache variable(s)
 CONTEXT_TEMPLATES_CACHE = None
 COV_CACHE = {}
@@ -23,7 +23,7 @@ def apply_Baseline_NoneEditing_to_model(
     model: AutoModelForCausalLM,
     tok: AutoTokenizer,
     requests: List[Dict],
-    hparams: AlphaEditHyperParams,
+    hparams: Baseline_NoneEditingHyperParams,
     cache_template: Optional[str] = None,
     cache_c = None,
     P = None,
