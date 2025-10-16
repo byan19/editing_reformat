@@ -34,6 +34,8 @@ from AlphaEdit.AlphaEdit_main import apply_AlphaEdit_to_model, get_cov
 from AlphaEdit_Hessian import AlphaEdit_Hessian_HyperParams
 from AlphaEdit_Hessian.AlphaEdit_Hessian_main import apply_AlphaEdit_Hessian_to_model, get_cov
 
+from Baseline_NoneEditing import Baseline_NoneEditing_hparams
+
 
 from rome import ROMEHyperParams, apply_rome_to_model
 from util import nethook
@@ -46,6 +48,7 @@ import pdb
 ALG_DICT = {
     "AlphaEdit": (AlphaEditHyperParams, apply_AlphaEdit_to_model),
     "AlphaEdit_Hessian": (AlphaEdit_Hessian_HyperParams, apply_AlphaEdit_Hessian_to_model),
+    "Basline_NoneEditing": (Baseline_NoneEditing_hparams, ),
     "MEMIT_seq": (MEMITHyperParams, apply_memit_seq_to_model),
     "MEMIT_prune": (MEMITHyperParams, apply_memit_to_model),
     "MEMIT_rect": (MEMITHyperParams, apply_memit_rect_to_model),
@@ -117,6 +120,7 @@ def main(
             if continue_from_run is not None
             else HPARAMS_DIR / alg_name / hparams_fname
         )
+        
     hparams = params_class.from_json(params_path)
     if not (run_dir / "params.json").exists():
         shutil.copyfile(params_path, run_dir / "params.json")
@@ -395,7 +399,7 @@ def main(
                         original_weight = nethook.get_parameter(model, k)
                         adjusted_weight = original_weight + upd_matrix[k]
                         original_weight.copy_(adjusted_weight)
-        elif alg_name == 'BASELINE':
+        elif alg_name == 'Baseline_NoneEditing':
             edited_model = model
         else:
             edited_model, _ = apply_algo(
