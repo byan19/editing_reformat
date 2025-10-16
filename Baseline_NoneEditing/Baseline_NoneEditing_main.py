@@ -19,7 +19,7 @@ from .Baseline_NoneEditing_hparams import AlphaEditHyperParams
 CONTEXT_TEMPLATES_CACHE = None
 COV_CACHE = {}
 
-def apply_AlphaEdit_to_model(
+def apply_Baseline_NoneEditing_to_model(
     model: AutoModelForCausalLM,
     tok: AutoTokenizer,
     requests: List[Dict],
@@ -28,127 +28,7 @@ def apply_AlphaEdit_to_model(
     cache_c = None,
     P = None,
 ) -> Dict[str, Tuple[torch.Tensor]]:
-    """
-    Executes the MEMIT update algorithm for the specified update at the specified layer
-    Invariant: model at beginning of function == model at end of function
-    """
-
-    # Update target and print info
-    requests = deepcopy(requests)
-    for i, request in enumerate(requests):
-        if request["target_new"]["str"][0] != " ":
-            # Space required for correct tokenization
-            requests[i]["target_new"]["str"] = " " + request["target_new"]["str"]
-    for request in requests[:10]:
-        print(
-            f"MEMIT request sample: "
-            f"[{request['prompt'].format(request['subject'])}] -> [{request['target_new']['str']}]"
-        )
-
-    # Retrieve weights that user desires to change
-    weights = {
-        f"{hparams.rewrite_module_tmp.format(layer)}.weight": nethook.get_parameter(
-            model, f"{hparams.rewrite_module_tmp.format(layer)}.weight"
-        )
-        for layer in hparams.layers
-    }
-    # Compute z for final layer
-    context_templates = get_context_templates(model, tok)
-    z_layer = hparams.layers[-1]
-    z_list = []
-
-    for request in requests:
-        # Retrieve k/v pair if already stored in cache
-        cache_fname = (
-            Path(
-                str(cache_template).format(
-                    z_layer, hparams.clamp_norm_factor, request["case_id"]
-                )
-            )
-            if cache_template is not None
-            else None
-        )
-        data_loaded = False
-        if (
-            cache_fname is not None  # Require cache template
-            and cache_fname.exists()  # Cache file must exist
-        ):
-            try:
-                data = np.load(cache_fname)
-                z_list.append(torch.from_numpy(data["v_star"]).to("cuda"))
-                data_loaded = True
-            except Exception as e:
-                print(f"Error reading cache file due to {e}. Recomputing...")
-
-        # Compute k/v pair if not loaded from cache
-        if not data_loaded:
-            cur_z = compute_z(
-                model,
-                tok,
-                request,
-                hparams,
-                z_layer,
-                context_templates,
-            )
-
-            z_list.append(cur_z)
-
-            if cache_fname is not None:
-                cache_fname.parent.mkdir(exist_ok=True, parents=True)
-                np.savez(
-                    cache_fname,
-                    **{
-                        "v_star": cur_z.detach().cpu().numpy(),
-                    },
-                )
-                print(f"Cached k/v pair at {cache_fname}")
-    zs = torch.stack(z_list, dim=1)
-
-    for i, layer in enumerate(hparams.layers):
-        print(f"\n\nLAYER {layer}\n")
-
-        # Get current model activations
-        layer_ks = compute_ks(model, tok, requests, hparams, layer, context_templates).T
-        print(f"Writing {layer_ks.size(1)} key/value pair(s) into layer {layer}")
-
-        # Compute residual error
-        cur_zs = get_module_input_output_at_words(
-            model,
-            tok,
-            z_layer,
-            context_templates=[request["prompt"] for request in requests],
-            words=[request["subject"] for request in requests],
-            module_template=hparams.layer_module_tmp,
-            fact_token_strategy=hparams.fact_token,
-        )[1].T
-        targets = zs - cur_zs
-        print("z error", torch.linalg.norm(targets, dim=0).mean())
-
-        repeat_factor = (layer_ks.size(1) // targets.size(1))
-        targets = targets.repeat_interleave(repeat_factor, dim=1)
-        resid = targets / (len(hparams.layers) - i)  # Distribute residual across layers
-        upd_matrix = torch.linalg.solve(
-                P[i,:,:].cuda() @ (layer_ks @ layer_ks.T + cache_c[i,:,:].cuda()) + hparams.L2*torch.eye(layer_ks.shape[0], dtype=torch.float,device="cuda"), P[i,:,:].cuda() @ layer_ks @ resid.T
-        )
-        # Adjust update matrix shape
-        weight_name = f"{hparams.rewrite_module_tmp.format(layer)}.weight"
-        upd_matrix = upd_matrix_match_shape(upd_matrix, weights[weight_name].shape)
-        print("orig norm", torch.linalg.norm(weights[weight_name]))
-        print("upd norm", torch.linalg.norm(upd_matrix))
-        with torch.no_grad():
-            weights[weight_name][...] = weights[weight_name] + upd_matrix
-        # Clear GPU memory
-        #del U,S,cov
-        for x in [layer_ks, cur_zs, targets, upd_matrix]:
-            x.cpu()
-            del x
-        torch.cuda.empty_cache()
-    for i, layer in enumerate(hparams.layers):
-        layer_ks = compute_ks(model, tok, requests, hparams, layer, context_templates).T
-        cache_c[i,:,:] += layer_ks.cpu() @ layer_ks.cpu().T
-
-    print(f"Deltas successfully computed for {list(weights.keys())}")
-    return model, cache_c
+    return
 
 
 def get_cov(

@@ -35,6 +35,7 @@ from AlphaEdit_Hessian import AlphaEdit_Hessian_HyperParams
 from AlphaEdit_Hessian.AlphaEdit_Hessian_main import apply_AlphaEdit_Hessian_to_model, get_cov
 
 from Baseline_NoneEditing import Baseline_NoneEditing_hparams
+from Baseline_NoneEditing.Baseline_NoneEditing_main import apply_Baseline_NoneEditing_to_model, get_cov
 
 
 from rome import ROMEHyperParams, apply_rome_to_model
@@ -48,7 +49,7 @@ import pdb
 ALG_DICT = {
     "AlphaEdit": (AlphaEditHyperParams, apply_AlphaEdit_to_model),
     "AlphaEdit_Hessian": (AlphaEdit_Hessian_HyperParams, apply_AlphaEdit_Hessian_to_model),
-    "Baseline_NoneEditing": (Baseline_NoneEditing_hparams, ),
+    "Baseline_NoneEditing": (Baseline_NoneEditing_hparams, apply_Baseline_NoneEditing_to_model ),
     "MEMIT_seq": (MEMITHyperParams, apply_memit_seq_to_model),
     "MEMIT_prune": (MEMITHyperParams, apply_memit_to_model),
     "MEMIT_rect": (MEMITHyperParams, apply_memit_rect_to_model),
