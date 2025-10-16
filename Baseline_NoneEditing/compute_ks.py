@@ -12,7 +12,7 @@ def compute_ks(
     model: AutoModelForCausalLM,
     tok: AutoTokenizer,
     requests: Dict,
-    hparams: AlphaEditHyperParams,
+    hparams: Baseline_NoneEditingHyperParams,
     layer: int,
     context_templates: List[str],
 ):
