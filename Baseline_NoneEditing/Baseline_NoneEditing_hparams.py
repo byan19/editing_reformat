@@ -21,7 +21,17 @@ class Baseline_NoneEditingHyperParams(HyperParams):
     kl_factor: float
     mom2_adjustment: bool
     mom2_update_weight: float
-
+    
+    # for Hessian
+    flat_loss_lambda: float
+    noise_scale: float
+    flatness_loss: bool
+    hessian_type: str
+    hessian_scale: float
+    conver_loss: bool
+    conver_loss_type: str
+    conver_loss_lambda: float
+    
     # Module templates
     rewrite_module_tmp: str
     layer_module_tmp: str
@@ -29,7 +39,7 @@ class Baseline_NoneEditingHyperParams(HyperParams):
     attn_module_tmp: str
     ln_f_module: str
     lm_head_module: str
-
+    
     # Statistics
     mom2_dataset: str
     mom2_n_samples: int
