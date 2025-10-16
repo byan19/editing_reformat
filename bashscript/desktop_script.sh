@@ -38,6 +38,7 @@ algo=${Target_param}
 algo=alphaedit
 algo=nse
 algo=alphaedit_hessian
+algo=baseline_noneediting
 
 #File=bashscript/subrun/nse.sh
 #File=bashscript/subrun/alphaedit_hessian.sh
