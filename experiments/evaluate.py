@@ -48,7 +48,7 @@ import pdb
 ALG_DICT = {
     "AlphaEdit": (AlphaEditHyperParams, apply_AlphaEdit_to_model),
     "AlphaEdit_Hessian": (AlphaEdit_Hessian_HyperParams, apply_AlphaEdit_Hessian_to_model),
-    "Basline_NoneEditing": (Baseline_NoneEditing_hparams, ),
+    "Baseline_NoneEditing": (Baseline_NoneEditing_hparams, ),
     "MEMIT_seq": (MEMITHyperParams, apply_memit_seq_to_model),
     "MEMIT_prune": (MEMITHyperParams, apply_memit_to_model),
     "MEMIT_rect": (MEMITHyperParams, apply_memit_rect_to_model),
