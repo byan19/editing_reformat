@@ -29,6 +29,7 @@ class AlphaEdit_Hessian_HyperParams(HyperParams):
     hessian_type: str
     hessian_scale: float
     conver_loss: bool
+    conver_loss_type:str
     conver_loss_lambda: float
 
     # Module templates

@@ -994,7 +994,11 @@ def compute_z(
                     hidden_states[i][torch.arange(logits.size(0)), pred_loc]
                     , hidden_states[i - 1][torch.arange(logits.size(0)), pred_loc])
                 
+            if hparams.type == 'origin':
                 conver_loss += numerator / demoninator
+            elif hparams.type == 'inverse':
+                conver_loss += demoninator /numerator
+                
             conver_loss = hparams.conver_loss_lambda * conver_loss
             
         else:
