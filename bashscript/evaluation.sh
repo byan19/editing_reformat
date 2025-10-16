@@ -12,4 +12,4 @@
 #python -m experiments.summarize --dir_name=AlphaEdit_mcf_L3000_NR100 --runs=run_003
 #python -m experiments.summarize --dir_name=AlphaEdit_Hessian --runs=run_000
 #python -m experiments.summarize --dir_name=NSE --runs=run_000
-python -m experiments.summarize --dir_name=AlphaEdit_Hessian --runs=run_007
+python -m experiments.summarize --dir_name=AlphaEdit_Hessian --runs=run_009
