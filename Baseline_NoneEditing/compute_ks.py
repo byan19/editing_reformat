@@ -5,7 +5,7 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from .compute_z import get_module_input_output_at_words
-from .Baseline_NoneEditing_hparams import AlphaEditHyperParams
+from .Baseline_NoneEditing_hparams import Baseline_NoneEditingHyperParams
 
 
 def compute_ks(
