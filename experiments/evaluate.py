@@ -395,6 +395,8 @@ def main(
                         original_weight = nethook.get_parameter(model, k)
                         adjusted_weight = original_weight + upd_matrix[k]
                         original_weight.copy_(adjusted_weight)
+        elif alg_name == 'BASELINE':
+            edited_model = model
         else:
             edited_model, _ = apply_algo(
                 model,
