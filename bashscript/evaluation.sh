@@ -1,8 +1,9 @@
-python -m experiments.summarize --dir_name=AlphaEdit --runs=run_001
+#python -m experiments.summarize --dir_name=AlphaEdit --runs=run_001
 #python -m experiments.summarize --dir_name=AlphaEdit_Hessian --runs=run_004
 #python -m experiments.summarize --dir_name=AlphaEdit_mcf_L3000_NR100 --runs=run_003
 #python -m experiments.summarize --dir_name=AlphaEdit_Hessian --runs=run_000
 #python -m experiments.summarize --dir_name=NSE --runs=run_000
 #python -m experiments.summarize --dir_name=AlphaEdit_Hessian --runs=run_009
 #python -m experiments.summarize --dir_name=Baseline_NoneEditing --runs=run_003
-python -m experiments.summarize --dir_name=AlphaEdit_Hessian --runs=run_012
+#python -m experiments.summarize --dir_name=AlphaEdit_Hessian --runs=run_012
+python -m experiments.summarize --dir_name=AlphaEdit_Hessian --runs=run_015
