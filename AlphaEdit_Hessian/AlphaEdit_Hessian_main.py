@@ -181,6 +181,9 @@ def apply_AlphaEdit_Hessian_to_model(
             hessian[i, :, : ] += (fisher_matrix/ fisher_matrix.max()).cpu()
         elif hparams.hessian_type == 'rescale_origin':
             hessian[i, :, : ] += hparams.hessian_scale * fisher_matrix.cpu()
+        elif hparams.hessian_type == 'origin_then_max_norm':
+            hessian[i, :, : ] += fisher_matrix.cpu()
+            hessian[i, :, : ] = (hessian[i,:,:] / hessian[i,:,:].max()).cpu()
 
     print(f"Deltas successfully computed for {list(weights.keys())}")
     return model, cache_c, hessian
