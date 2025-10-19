@@ -228,6 +228,10 @@ def main(
             for i, layer in enumerate(hparams.layers):
                 P[i,:,:] = get_project(model,tok,layer,hparams)
             torch.save(P, "null_space_project.pt")
+            
+    if alg_name == "AlphaEdit_Hessian":
+        #hessian = torch.eye(P.shape[-1]).unsqueeze(0).repeat(P.shape[0], 1, 1)
+        hessian = torch.eye(4096).unsqueeze(0).repeat(P.shape[0], 1, 1)
         #pdb.set_trace()
     # hs = get_module_input_output_at_words(
     #         model,
@@ -273,8 +277,8 @@ def main(
         
         if alg_name == "AlphaEdit_Hessian":
             #hessian = torch.eye(P.shape[-1]).unsqueeze(0).repeat(P.shape[0], 1, 1)
-            hessian = torch.eye(4096).unsqueeze(0).repeat(P.shape[0], 1, 1)
             hess_args = dict(hessian = hessian)  if any(alg in alg_name for alg in ["AlphaEdit_Hessian"]) else dict()
+            #hess_args = dict(hessian = hessian)  if any(alg in alg_name for alg in ["AlphaEdit_Hessian"]) else dict()
         
         #do initial GLUE EVAL WITH ORIGINAL MODEL
         if cnt == 0 and args.downstream_eval_steps > 0 and not debugging_mood:
@@ -316,7 +320,7 @@ def main(
                 **nc_args,
             )
         elif alg_name == 'AlphaEdit_Hessian':
-            edited_model, cache_c, hessian = apply_algo(
+            edited_model, cache_c, hessian, largest_norm = apply_algo(
                 model,
                 tok,
                 [

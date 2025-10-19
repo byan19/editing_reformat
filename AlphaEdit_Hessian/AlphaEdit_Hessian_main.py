@@ -29,7 +29,8 @@ def apply_AlphaEdit_Hessian_to_model(
     cache_template: Optional[str] = None,
     cache_c = None,
     P = None,
-    hessian = None
+    hessian = None,
+    largest_norm = 0.0,
 ) -> Dict[str, Tuple[torch.Tensor]]:
     """
     Executes the MEMIT update algorithm for the specified update at the specified layer
@@ -184,9 +185,11 @@ def apply_AlphaEdit_Hessian_to_model(
         elif hparams.hessian_type == 'origin_then_max_norm':
             hessian[i, :, : ] += fisher_matrix.cpu()
             hessian[i, :, : ] = (hessian[i,:,:] / hessian[i,:,:].max()).cpu()
+        elif hparams.hessian_type == 'origin_then_max_norm':
+            hessian[i, :, : ] += fisher_matrix.cpu()/largest_norm
 
     print(f"Deltas successfully computed for {list(weights.keys())}")
-    return model, cache_c, hessian
+    return model, cache_c, hessian, largest_norm
 
 
 def get_cov(
