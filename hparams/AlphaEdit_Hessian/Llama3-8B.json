@@ -15,7 +15,7 @@
     "noise_scale": 0.001,
     "hessian_type": "origin_then_max_norm",
     "hessian_scale": 0.1,
-    "conver_loss": true,
+    "conver_loss": false,
     "conver_loss_type": "origin",
     "conver_loss_lambda": 0.01,
 
