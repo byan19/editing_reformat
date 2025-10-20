@@ -154,6 +154,8 @@ def apply_AlphaEdit_Hessian_to_model(
         tmp = upd_matrix @ (fisher_matrix/ fisher_matrix.max() + torch.eye(fisher_matrix.shape[0], dtype=torch.float,device="cuda"))
         '''
         
+        if hparams.hessian_type == 'origin_then_largest_norm':
+            holder_matrix = upd_matrix.detach().clone()
         upd_matrix = upd_matrix @ hessian[i, :, : ].cuda()
         print('the final solution with fisher matrix')
         print(upd_matrix)
@@ -185,7 +187,9 @@ def apply_AlphaEdit_Hessian_to_model(
         elif hparams.hessian_type == 'origin_then_max_norm':
             hessian[i, :, : ] += fisher_matrix.cpu()
             hessian[i, :, : ] = (hessian[i,:,:] / hessian[i,:,:].max()).cpu()
-        elif hparams.hessian_type == 'origin_then_max_norm':
+        elif hparams.hessian_type == 'largest_norm':
+            if holder_matrix.norm(2).item() > largest_norm:
+                largest_norm =largest_norm
             hessian[i, :, : ] += fisher_matrix.cpu()/largest_norm
 
     print(f"Deltas successfully computed for {list(weights.keys())}")

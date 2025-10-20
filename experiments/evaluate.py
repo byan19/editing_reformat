@@ -232,6 +232,7 @@ def main(
     if alg_name == "AlphaEdit_Hessian":
         #hessian = torch.eye(P.shape[-1]).unsqueeze(0).repeat(P.shape[0], 1, 1)
         hessian = torch.eye(4096).unsqueeze(0).repeat(P.shape[0], 1, 1)
+        largest_norm = 0.0
         #pdb.set_trace()
     # hs = get_module_input_output_at_words(
     #         model,
@@ -276,8 +277,8 @@ def main(
         nc_args = dict(P = P) if any(alg in alg_name for alg in ["AlphaEdit", "AlphaEdit_Hessian"]) else dict()
         
         if alg_name == "AlphaEdit_Hessian":
-            #hessian = torch.eye(P.shape[-1]).unsqueeze(0).repeat(P.shape[0], 1, 1)
             hess_args = dict(hessian = hessian)  if any(alg in alg_name for alg in ["AlphaEdit_Hessian"]) else dict()
+            hess_args['largest_norm'] = largest_norm
             #hess_args = dict(hessian = hessian)  if any(alg in alg_name for alg in ["AlphaEdit_Hessian"]) else dict()
         
         #do initial GLUE EVAL WITH ORIGINAL MODEL
