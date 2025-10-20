@@ -155,7 +155,7 @@ def apply_AlphaEdit_Hessian_to_model(
         tmp = upd_matrix @ (fisher_matrix/ fisher_matrix.max() + torch.eye(fisher_matrix.shape[0], dtype=torch.float,device="cuda"))
         '''
         
-        if hparams.hessian_type == 'origin_then_largest_norm':
+        if hparams.hessian_type == 'largest_norm':
             holder_matrix = upd_matrix.detach().clone()
             pdb.set_trace()
         upd_matrix = upd_matrix @ hessian[i, :, : ].cuda()
