@@ -47,6 +47,7 @@ algo=alphaedit_hessian
 File=bashscript/subrun/${algo}.sh
 
 sessionname=${algo}_${dataset_name}_L${dataset_limit}_NR${num_each_round}
+sessionname=test
 
 
 MultiRun ${sessionname} ${File} ${dataset_limit} ${num_each_round} ${model_name} ${gpu} ${dataset_name}
