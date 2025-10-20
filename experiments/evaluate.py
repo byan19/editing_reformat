@@ -232,7 +232,7 @@ def main(
     if alg_name == "AlphaEdit_Hessian":
         #hessian = torch.eye(P.shape[-1]).unsqueeze(0).repeat(P.shape[0], 1, 1)
         hessian = torch.eye(4096).unsqueeze(0).repeat(P.shape[0], 1, 1)
-        largest_norm = 0.0
+        largest_norm = 1.0
         #pdb.set_trace()
     # hs = get_module_input_output_at_words(
     #         model,

@@ -191,7 +191,7 @@ def apply_AlphaEdit_Hessian_to_model(
             hessian[i, :, : ] = (hessian[i,:,:] / hessian[i,:,:].max()).cpu()
         elif hparams.hessian_type == 'largest_norm':
             if holder_matrix.norm(2).item() > largest_norm:
-                largest_norm =largest_norm
+                largest_norm = holder_matrix.norm(2).item()
             hessian[i, :, : ] += fisher_matrix.cpu()/largest_norm
             print(f'largest norm is: {largest_norm}')
 
