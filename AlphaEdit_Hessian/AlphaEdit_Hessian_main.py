@@ -157,6 +157,7 @@ def apply_AlphaEdit_Hessian_to_model(
         
         if hparams.hessian_type == 'origin_then_largest_norm':
             holder_matrix = upd_matrix.detach().clone()
+            pdb.set_trace()
         upd_matrix = upd_matrix @ hessian[i, :, : ].cuda()
         print('the final solution with fisher matrix')
         print(upd_matrix)
