@@ -192,6 +192,7 @@ def apply_AlphaEdit_Hessian_to_model(
             if holder_matrix.norm(2).item() > largest_norm:
                 largest_norm =largest_norm
             hessian[i, :, : ] += fisher_matrix.cpu()/largest_norm
+            print(f'largest norm is: {largest_norm}')
 
     print(f"Deltas successfully computed for {list(weights.keys())}")
     return model, cache_c, hessian, largest_norm
