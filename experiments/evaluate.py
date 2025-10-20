@@ -241,6 +241,7 @@ def main(
     #         context_templates=[request["template"] for request in eval_ds],
     #         words=[request["subject"] for request in eval_ds],
     #         module_template=hparams.layer_module_tmp,
+    
     #         fact_token_strategy=hparams.fact_token,
     #     )[1].T
     # torch.save(hs, "pre_edit_hs.pt")
