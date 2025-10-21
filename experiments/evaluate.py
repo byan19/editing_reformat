@@ -233,6 +233,7 @@ def main(
         #hessian = torch.eye(P.shape[-1]).unsqueeze(0).repeat(P.shape[0], 1, 1)
         hessian = torch.eye(4096).unsqueeze(0).repeat(P.shape[0], 1, 1)
         largest_norm = 1.0
+        hessian_record = {'hessian_norm':[], 'largest_norm': []}
         #pdb.set_trace()
     # hs = get_module_input_output_at_words(
     #         model,
@@ -341,6 +342,9 @@ def main(
                 **nc_args,
                 **hess_args
             )
+            hessian_norm_tmp = [ hessian[ele_index].norm(2).item() for ele_index in range(hessian.shape[0])]
+            hessian_record['hessian_norm'].append(hessian_norm_tmp)
+            hessian_record['largest_norm'].append(largest_norm)
         # runing on MEMIT_prune
         elif alg_name == "MEMIT_prune":
             if cnt == 0:
@@ -483,6 +487,8 @@ def main(
         # Dump metrics in .json
         with open(out_file, "w") as f:
             json.dump(metrics, f, indent=1)
+        
+         
 
         # Restore original weights
         # with torch.no_grad():
@@ -492,6 +498,11 @@ def main(
         print("Evaluation took", time() - start)
     print(f'@@@@@@@@@@ total time cost: {time() -alpha_startingtime}')
     print(f' The final results is stored in: {out_file}')
+    if alg_name=="Alpha_Hessian":
+        out_file_name = 'hessian'
+        with open(out_file_name, "w") as f:
+            json.dump(hessian_record, f, indent=1)
+        
     #print(f' the output file is: {out_file}')
 
 

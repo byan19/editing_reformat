@@ -30,6 +30,9 @@ model_name=meta-llama/Meta-Llama-3-8B-Instruct
 
 dataset_limit=3000
 num_each_round=100
+
+dataset_limit=300
+num_each_round=100
 dataset_name=zsre
 dataset_name=mcf
 
@@ -46,8 +49,8 @@ algo=alphaedit_hessian
 
 File=bashscript/subrun/${algo}.sh
 
-sessionname=${algo}_${dataset_name}_L${dataset_limit}_NR${num_each_round}
 sessionname=test
+sessionname=${algo}_${dataset_name}_L${dataset_limit}_NR${num_each_round}
 
 
 MultiRun ${sessionname} ${File} ${dataset_limit} ${num_each_round} ${model_name} ${gpu} ${dataset_name}
