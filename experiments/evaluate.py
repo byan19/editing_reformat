@@ -499,7 +499,7 @@ def main(
     print(f'@@@@@@@@@@ total time cost: {time() -alpha_startingtime}')
     print(f' The final results is stored in: {out_file}')
     if alg_name=="Alpha_Hessian":
-        out_file_name = 'hessian'
+        out_file_name = 'hessian_record'
         with open(out_file_name, "w") as f:
             json.dump(hessian_record, f, indent=1)
         
