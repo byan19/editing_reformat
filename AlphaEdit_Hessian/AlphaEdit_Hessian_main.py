@@ -193,6 +193,13 @@ def apply_AlphaEdit_Hessian_to_model(
             if holder_matrix.norm(2).item() > largest_norm:
                 largest_norm = holder_matrix.norm(2).item()
             hessian[i, :, : ] += fisher_matrix.cpu()/largest_norm
+        elif hparams.hessian_type == 'soft_largest_norm':
+            if holder_matrix.norm(2).item() > largest_norm:
+                largest_norm = holder_matrix.norm(2).item()
+                hessian[i, :, :] += fisher_matrix.cpu() / largest_norm
+            else:
+                hessian[i, :, :] += fisher_matrix.cpu() / (holder_matrix.norm(2).item())
+                
             print(f'largest norm is: {largest_norm}')
 
     print(f"Deltas successfully computed for {list(weights.keys())}")

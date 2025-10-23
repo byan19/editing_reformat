@@ -500,7 +500,7 @@ def main(
     print(f'@@@@@@@@@@ total time cost: {time() -alpha_startingtime}')
     print(f' The final results is stored in: {out_file}')
     if alg_name=="AlphaEdit_Hessian":
-        out_file_name = str(run_dir) + '/' + 'hessian_record'
+        out_file_name = str(run_dir) + '/' + 'hessian_record.json'
         with open(out_file_name, "w") as f:
             print(f' hessian record is hsaved ')
             json.dump(hessian_record, f, indent=1)
