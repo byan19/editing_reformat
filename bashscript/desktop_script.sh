@@ -31,8 +31,6 @@ model_name=meta-llama/Meta-Llama-3-8B-Instruct
 dataset_limit=3000
 num_each_round=100
 
-dataset_limit=30
-num_each_round=30
 dataset_name=zsre
 dataset_name=mcf
 
