@@ -501,6 +501,7 @@ def main(
     if alg_name=="AlphaEdit_Hessian":
         out_file_name = 'hessian_record'
         with open(out_file_name, "w") as f:
+            print(f' hessian record is hsaved ')
             json.dump(hessian_record, f, indent=1)
         
     #print(f' the output file is: {out_file}')
