@@ -343,7 +343,6 @@ def main(
                 **nc_args,
                 **hess_args
             )
-            pdb.set_trace()
             hessian_norm_tmp = [ hessian[ele_index].norm(2).item() for ele_index in range(hessian.shape[0])]
             hessian_record['hessian_norm'].append(hessian_norm_tmp)
             hessian_record['largest_norm'].append(largest_norm)
