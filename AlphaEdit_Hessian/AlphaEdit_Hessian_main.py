@@ -157,11 +157,14 @@ def apply_AlphaEdit_Hessian_to_model(
         
         
         #if hparams.hessian_type == 'largest_norm' or hparams.hessian_type == 'soft_largest_norm':
-        pdb.set_trace()
         if 'largest_norm'in hparams.hessian_type:
             holder_matrix = upd_matrix.detach().clone()
             
-        upd_matrix = upd_matrix @ hessian[i, :, : ].cuda()
+        if hparams.layerwise_hessian:
+            upd_matrix = upd_matrix @ hessian[i, :, :].cuda() / torch.exp(upd_matrix.max())
+            print('layerwise hessian')
+        else:
+            upd_matrix = upd_matrix @ hessian[i, :, : ].cuda()
         print('the final solution with fisher matrix')
         print(upd_matrix)
         # Adjust update matrix shape
