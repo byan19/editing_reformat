@@ -165,6 +165,7 @@ def apply_AlphaEdit_Hessian_to_model(
             print('layerwise hessian')
         else:
             upd_matrix = upd_matrix @ hessian[i, :, : ].cuda()
+            
         print('the final solution with fisher matrix')
         print(upd_matrix)
         # Adjust update matrix shape
