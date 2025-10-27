@@ -29,7 +29,7 @@ Tunning=${Tunning_list[$idx]}
 gpu=0
 model_name=/root/autodl-tmp/meta-llama3-8b-instruct
 
-dataset_limit=300
+dataset_limit=3000
 num_each_round=100
 dataset_name=zsre
 dataset_name=mcf
