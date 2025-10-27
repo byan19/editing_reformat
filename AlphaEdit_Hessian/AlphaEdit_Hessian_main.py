@@ -162,7 +162,6 @@ def apply_AlphaEdit_Hessian_to_model(
             
         if hparams.layerwise_hessian:
             upd_matrix = upd_matrix @ hessian[i, :, :].cuda() / torch.exp(upd_matrix.max())
-            print('layerwise hessian')
         else:
             upd_matrix = upd_matrix @ hessian[i, :, : ].cuda()
             
