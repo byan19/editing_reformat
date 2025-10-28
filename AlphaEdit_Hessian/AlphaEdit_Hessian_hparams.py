@@ -28,7 +28,7 @@ class AlphaEdit_Hessian_HyperParams(HyperParams):
     flatness_loss: bool
     hessian_type: str
     hessian_scale: float
-    layerwise_hessian:bool
+    layerwise_hessian:str
     conver_loss: bool
     conver_loss_type:str
     conver_loss_lambda: float

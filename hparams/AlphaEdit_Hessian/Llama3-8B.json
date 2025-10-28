@@ -15,7 +15,7 @@
     "noise_scale": 0.001,
     "hessian_type": "largest_norm",
     "hessian_scale": 0.1,
-    "layerwise_hessian": true,
+    "layerwise_hessian": 'largest_norm',
     "conver_loss": false,
     "conver_loss_type": "origin",
     "conver_loss_lambda": 0.01,

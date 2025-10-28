@@ -160,8 +160,10 @@ def apply_AlphaEdit_Hessian_to_model(
         if 'largest_norm'in hparams.hessian_type:
             holder_matrix = upd_matrix.detach().clone()
             
-        if hparams.layerwise_hessian:
+        if hparams.layerwise_hessian == 'largest_norm':
             upd_matrix = upd_matrix @ hessian[i, :, :].cuda() / torch.exp(upd_matrix.max())
+        elif hparams.layerwise_hessian == 'l2_norm':
+            upd_matrix = upd_matrix @ hessian[i, :, :].cuda() / torch.exp(upd_matrix.norm(2))
         else:
             upd_matrix = upd_matrix @ hessian[i, :, : ].cuda()
             
