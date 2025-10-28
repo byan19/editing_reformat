@@ -157,10 +157,10 @@ def apply_AlphaEdit_Hessian_to_model(
         
         
         #if hparams.hessian_type == 'largest_norm' or hparams.hessian_type == 'soft_largest_norm':
-        if 'largest_norm'in hparams.hessian_type:
+        if 'largest_norm'in hparams.hessian_type or 'largest_max_norm' in hparams.hessian_type:
             holder_matrix = upd_matrix.detach().clone()
             
-        if hparams.layerwise_hessian == 'largest_norm':
+        if hparams.layerwise_hessian == 'max_norm':
             upd_matrix = upd_matrix @ hessian[i, :, :].cuda() / torch.exp(upd_matrix.max())
         elif hparams.layerwise_hessian == 'l2_norm':
             upd_matrix = upd_matrix @ hessian[i, :, :].cuda() / torch.exp(upd_matrix.norm(2))
@@ -201,6 +201,10 @@ def apply_AlphaEdit_Hessian_to_model(
             if holder_matrix.norm(2).item() > largest_norm:
                 largest_norm = holder_matrix.norm(2).item()
             hessian[i, :, : ] += fisher_matrix.cpu()/largest_norm
+        elif hparams.hessian_type == 'largest_max_norm':
+            if holder_matrix.max().item() > largest_norm:
+                largest_norm = holder_matrix.max().item()
+            hessian[i, :, :] += fisher_matrix.cpu() / largest_norm
         elif hparams.hessian_type == 'largest_norm_damping':
             if holder_matrix.norm(2).item() > largest_norm:
                 largest_norm = holder_matrix.norm(2).item()
