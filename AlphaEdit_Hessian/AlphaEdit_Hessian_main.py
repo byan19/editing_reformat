@@ -236,8 +236,8 @@ def apply_AlphaEdit_Hessian_to_model(
 def newtonschulz5(G, steps=5, eps=1e-7):
     assert G.ndim == 2
     a, b, c = (3.4445, -4.7750, 2.0315)
-    #X = G.bfloat16()
-    X = G
+    X = G.bfloat16()
+    #X = G
     X /= (X.norm() + eps)
     if G.size(0) > G.size(1):
         X = X.T
