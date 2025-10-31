@@ -32,6 +32,7 @@ class AlphaEdit_Hessian_HyperParams(HyperParams):
     conver_loss: bool
     conver_loss_type:str
     conver_loss_lambda: float
+    muon: bool
 
     # Module templates
     rewrite_module_tmp: str

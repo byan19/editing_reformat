@@ -166,6 +166,10 @@ def apply_AlphaEdit_Hessian_to_model(
             upd_matrix = upd_matrix @ hessian[i, :, :].cuda() / torch.exp(upd_matrix.norm(2))
         else:
             upd_matrix = upd_matrix @ hessian[i, :, : ].cuda()
+        
+        if hparams.muon:
+            upd_matrix = newtonschulz5(upd_matrix)
+            
             
         print('the final solution with fisher matrix')
         print(upd_matrix)
@@ -228,6 +232,22 @@ def apply_AlphaEdit_Hessian_to_model(
     return model, cache_c, hessian, largest_norm
 
 
+
+def newtonschulz5(G, steps=5, eps=1e-7):
+    assert G.ndim == 2
+    a, b, c = (3.4445, -4.7750, 2.0315)
+    #X = G.bfloat16()
+    X = G
+    X /= (X.norm() + eps)
+    if G.size(0) > G.size(1):
+        X = X.T
+    for _ in range(steps):
+        A = X @ X.T
+        B = b * A + c * A @ A
+        X = a * X + B @ X
+    if G.size(0) > G.size(1):
+        X = X.T
+    return X
 def get_cov(
     model: AutoModelForCausalLM,
     tok: AutoTokenizer,

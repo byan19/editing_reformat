@@ -6,4 +6,4 @@
 #python -m experiments.summarize --dir_name=AlphaEdit_Hessian --runs=run_009
 #python -m experiments.summarize --dir_name=Baseline_NoneEditing --runs=run_003
 #python -m experiments.summarize --dir_name=AlphaEdit_Hessian --runs=run_012
-python -m experiments.summarize --dir_name=AlphaEdit_Hessian --runs=run_038
+python -m experiments.summarize --dir_name=AlphaEdit_Hessian --runs=run_040
