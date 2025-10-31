@@ -138,11 +138,19 @@ def apply_AlphaEdit_Hessian_to_model(
         
         resid = targets / (len(hparams.layers) - i)  # Distribute residual across layers
         # AX= B torch.linalg.solve(A,B)
+        # original alphaedit
+        '''
         upd_matrix = torch.linalg.solve(
                 P[i,:,:].cuda() @ (layer_ks @ layer_ks.T + cache_c[i,:,:].cuda()) + hparams.L2*torch.eye(layer_ks.shape[0], dtype=torch.float,device="cuda"), # Matrix A
             P[i,:,:].cuda() @ layer_ks @ resid.T # matrix B
         )
+        '''
         
+        upd_matrix = torch.linalg.solve(
+            P[i,:,:].cuda() @ (layer_ks @ layer_ks.T ) + hparams.L2*torch.eye(layer_ks.shape[0], dtype=torch.float,device="cuda"), # Matrix A
+            P[i,:,:].cuda() @ layer_ks @ resid.T # matrix B
+        )
+
         print('update matrix')
         print(upd_matrix)
         

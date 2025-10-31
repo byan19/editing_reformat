@@ -15,11 +15,11 @@
     "noise_scale": 0.001,
     "hessian_type": "largest_max_norm",
     "hessian_scale": 0.1,
-    "layerwise_hessian": "no",
+    "layerwise_hessian": "max_norm",
     "conver_loss": false,
     "conver_loss_type": "origin",
     "conver_loss_lambda": 0.01,
-    "muon": true,
+    "muon": false,
 
     "mom2_adjustment": true,
     "mom2_update_weight": 15000,
